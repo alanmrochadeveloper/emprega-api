@@ -1,5 +1,6 @@
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Column } from "typeorm";
+import { Category } from "../category/category.entity";
 
 @Entity("person")
 export class Person {
@@ -29,11 +30,4 @@ export class Person {
 
     @ManyToOne(() => Category, category => category.id)
     categoryId: string;
-}
-
-class Category {
-    @PrimaryGeneratedColumn("uuid");
-    id: string;
-    @OneToMany(() => Person, person => person.categoryId)
-    people: Person []
 }
