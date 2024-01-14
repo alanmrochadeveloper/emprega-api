@@ -6,9 +6,10 @@ import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JobOpportunityModule } from './job-opportunity/job-opportunity.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
-  imports: [PersonModule, CategoryModule, UserModule, AuthModule, JobOpportunityModule],
+  imports: [PersonModule, CategoryModule, UserModule, AuthModule, JobOpportunityModule, CompanyModule],
   controllers: [AppController],
   providers: [AppService],
 })

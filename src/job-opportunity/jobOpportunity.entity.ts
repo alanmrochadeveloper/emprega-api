@@ -4,5 +4,4 @@ import { Entity, PrimaryGeneratedColumn } from "typeorm";
 export class JobOpportunity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
 }
