@@ -1,0 +1,10 @@
+POST http://localhost:8000/api/auth/admin/register
+Content-Type: application/json
+
+{
+    "first_name":"a",
+    "last_name":"a",
+    "email": "a@gmail",
+    "password": "a",
+    "password_confirm": "a"
+}
