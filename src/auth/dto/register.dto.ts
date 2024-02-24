@@ -15,5 +15,5 @@ export class RegisterDTO {
     password: string;
 
     @IsNotEmpty()
-    confirm_password: string;
+    password_confirm: string;
 }
