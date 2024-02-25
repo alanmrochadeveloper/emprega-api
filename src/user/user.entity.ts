@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Person } from "src/person/person.entity";
 import { Column, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Entity } from "typeorm/decorator/entity/Entity";
@@ -6,10 +7,14 @@ import { Entity } from "typeorm/decorator/entity/Entity";
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
+
     @Column({ unique: true })
     email: string;
+
+    @Exclude()
     @Column()
     password: string;
+
     @OneToOne(() => Person, person => person)
     person: Person;
 }

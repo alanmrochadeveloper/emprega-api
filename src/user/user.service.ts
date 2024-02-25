@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcryptjs";
 import { Repository } from 'typeorm';
@@ -6,7 +7,9 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {
+    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>
+        , private readonly jwtService: JwtService
+    ) {
 
     }
 
@@ -23,9 +26,19 @@ export class UserService {
     }
 
     async signIn(email: string, password: string) {
-        const user = await this.userRepository.findOne({ where: { email } })
+        const user = await this.userRepository.findOneBy({ email })
         if (!user) throw new NotFoundException("usuário não encontrado");
         if (!await bcrypt.compare(password, user.password)) throw new BadRequestException("Credenciais Inválidas!")
+        const jwt = this.jwtService.signAsync({ id: user.id })
+        return jwt;
+    }
+
+    async getUserByCookie(cookie) {
+        const { id } = await this.jwtService.verifyAsync(cookie)
+
+        const user = await this.userRepository.findOneBy({ id })
+
         return user;
+
     }
 }
