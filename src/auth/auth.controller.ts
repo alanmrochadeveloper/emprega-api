@@ -7,13 +7,16 @@ import { RegisterDTO } from './dto/register.dto';
 export class AuthController {
     constructor(private readonly userService: UserService) { }
 
-    @Post("admin/register")
+    @Post("register")
     async register(@Body() body: RegisterDTO) {
-        const { password, password_confirm } = body;
-        if (password !== password_confirm) throw new BadRequestException("Passwords doesn't match!")
-        const hashed = await bcrypt.hash(password, 12)
-        console.log({ hashed })
+        const { password_confirm, ...data } = body;
+        if (body.password !== password_confirm) throw new BadRequestException("Passwords doesn't match!")
+        const hashed = await bcrypt.hash(body.password, 12)
+        return this.userService.save({ ...data, password: hashed })
 
-        return body;
+    }
+    @Post("signin")
+    async signin(@Body("email") email: string, @Body("password") password: string) {
+        // rpasswordeturn this.se
     }
 }
