@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDTO } from './create-user-dto';
 import { UserService } from './user.service';
@@ -16,4 +16,16 @@ export class UserController {
         //   role: { id: role_id },
         // });
     }
+
+
+    @Get()
+    async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+        limit = limit > 100 ? 100 : limit;
+        return this.userService.findAll({
+            page,
+            limit,
+            route: 'http://localhost:3000/users',
+        });
+    }
+
 }

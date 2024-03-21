@@ -12,12 +12,17 @@ export class AuthController {
 
     @Post("register")
     async register(@Body() body: RegisterDTO) {
-        const { password_confirm, ...data } = body;
-        if (body.password !== password_confirm) throw new BadRequestException("Passwords doesn't match!")
-        const hashed = await bcrypt.hash(body.password, 12)
-        return this.userService.save({ ...data, password: hashed })
+        const { password_confirm, password, ...data } = body;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
+        if (!passwordRegex.test(password)) {
+            throw new BadRequestException("A senha deve conter pelo menos 1 símbolo, 1 letra maiúscula, 1 número e ter no mínimo 8 caracteres.");
+        }
+        if (password !== password_confirm) throw new BadRequestException("As senhas não coincidem!")
+        const hashed = await bcrypt.hash(body.password, 12)
+        return this.userService.save({ ...data, password: hashed, password_confirm })
     }
+
     @Post("signin")
     async signIn(@Body("email") email: string,
         @Body("password") password: string,
@@ -45,5 +50,4 @@ export class AuthController {
             message: "success"
         }
     }
-
 }

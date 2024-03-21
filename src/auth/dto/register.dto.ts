@@ -15,5 +15,15 @@ export class RegisterDTO {
     password: string;
 
     @IsNotEmpty()
-    password_confirm: string;
+    password_confirm?: string;
+
+    @IsNotEmpty()
+    address: string;
+
+    @IsNotEmpty()
+    cpf: string;
+
+    @IsNotEmpty()
+    phone_number: string;
 }
+

@@ -23,10 +23,10 @@ export class Person {
     RG?: string;
 
     @Column({ name: "phonenumber", length: 50 })
-    PhoneNumber: string;
+    phoneNumber: string;
 
-    @Column({ name: "phonenumber2", length: 50 })
-    PhoneNumber2: string;
+    @Column({ name: "phonenumber2", nullable: true, length: 50 })
+    phoneNumber2: string;
 
     @ManyToOne(() => Category, category => category.id)
     categoryId: string;
