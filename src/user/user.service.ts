@@ -18,8 +18,8 @@ export class UserService {
 
     async save(registerDto: RegisterDTO) {
         try {
-            const userCreated = await this.userRepository.save({ email: registerDto.email, password: registerDto.password });
             const personCreated = await this.personRepository.save({ firstName: registerDto.first_name, lastName: registerDto.last_name, address: registerDto.address, CPF: registerDto.cpf, phoneNumber: registerDto.phone_number })
+            const userCreated = await this.userRepository.save({ email: registerDto.email, password: registerDto.password, person_id: personCreated.id });
             return {
                 email: userCreated.email,
                 nome: personCreated.firstName + " " + personCreated.lastName
@@ -61,6 +61,7 @@ export class UserService {
                     firstName: true,
                     lastName: true
                 }
+
             },
         });
 

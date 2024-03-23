@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Person } from "../person/person.entity";
 
 enum CategoryEnum {
@@ -11,10 +11,15 @@ enum CategoryEnum {
 export class Category {
     @PrimaryGeneratedColumn("uuid")
     id: string;
-    @OneToMany(() => Person, person => person.categoryId)
+    @OneToMany(() => Person, person => person.category)
     people: Person[]
     @Column({ name: "value", type: "enum", enum: CategoryEnum })
     value: CategoryEnum
-
+    @UpdateDateColumn()
+    updatedAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
+    @DeleteDateColumn()
+    deletedAt: Date;
 }
 

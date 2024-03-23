@@ -21,9 +21,9 @@ POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name":"Julio",
-    "last_name":"Mariatta Galesco",
-    "email": "JulioaMaluco56@gmail.com",
+    "first_name":"Narcisio",
+    "last_name":"Rocha Tamar",
+    "email": "Narcisio123@gmail.com",
     "password": "@Teste321",
     "password_confirm": "@Teste321",
     "address": "Rua teste",
@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/api/users?page=1&limit=10 HTTP/1.1
+GET http://localhost:8000/api/users?page=1&limit=100 HTTP/1.1
 
 Content-Type: application/json
 

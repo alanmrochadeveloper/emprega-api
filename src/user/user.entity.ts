@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
 import { Person } from "src/person/person.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Entity } from "typeorm/decorator/entity/Entity";
 
 @Entity("user")
@@ -15,17 +15,18 @@ export class User {
     @Column()
     password: string;
 
-    @OneToOne(() => Person, person => person)
+    @OneToOne(() => Person)
+    @JoinColumn()
     person: Person;
 
     @CreateDateColumn()
-    created_at: Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    updated_at: Date;
+    updatedAt: Date;
 
     @DeleteDateColumn()
-    deleted_at: Date;
+    deletedAt: Date;
 
 }
 

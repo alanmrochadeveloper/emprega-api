@@ -1,5 +1,5 @@
 import { User } from "src/user/user.entity";
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "../category/category.entity";
 
 @Entity("person")
@@ -28,9 +28,18 @@ export class Person {
     @Column({ name: "phonenumber2", nullable: true, length: 50 })
     phoneNumber2: string;
 
-    @ManyToOne(() => Category, category => category.id)
-    categoryId: string;
+    @ManyToOne(() => Category)
+    category: Category;
 
-    @OneToOne(() => User, user => user)
+    @OneToOne(() => User)
     user: User
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 }
