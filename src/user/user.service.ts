@@ -17,9 +17,13 @@ export class UserService {
     }
 
     async save(registerDto: RegisterDTO) {
+        const { first_name, last_name, address, cpf, phone_number, email, password } = registerDto
         try {
-            const personCreated = await this.personRepository.save({ firstName: registerDto.first_name, lastName: registerDto.last_name, address: registerDto.address, CPF: registerDto.cpf, phoneNumber: registerDto.phone_number })
-            const userCreated = await this.userRepository.save({ email: registerDto.email, password: registerDto.password, person_id: personCreated.id });
+            const personCreated = await this.personRepository.save({ firstName: first_name, lastName: last_name, address: address, CPF: cpf, phoneNumber: phone_number })
+            console.log({ personCreated })
+            const userCreated = await this.userRepository.save({ email, password, personId: personCreated.id });
+            console.log(
+                { userCreated })
             return {
                 email: userCreated.email,
                 nome: personCreated.firstName + " " + personCreated.lastName

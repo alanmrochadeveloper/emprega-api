@@ -5,8 +5,8 @@ import { Entity } from "typeorm/decorator/entity/Entity";
 
 @Entity("user")
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
     @Column({ unique: true })
     email: string;

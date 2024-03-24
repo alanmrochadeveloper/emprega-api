@@ -15,20 +15,22 @@ Content-Type: application/json
 POST http://localhost:8000/api/auth/signout 
 Content-Type: application/json
 
-###
+### register a user with a person and category together
 
 POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name":"Narcisio",
-    "last_name":"Rocha Tamar",
-    "email": "Narcisio123@gmail.com",
+    "first_name":"Teste 3",
+    "last_name":"Testes teste",
+    "email": "teste89182310122@gmail.com",
     "password": "@Teste321",
     "password_confirm": "@Teste321",
     "address": "Rua teste",
     "cpf": "12345678900",
-    "phone_number": "12345678900"
+    "phone_number": "12345678900",
+    "category":"Candidato"
+
 }
 
 ###
@@ -36,4 +38,5 @@ Content-Type: application/json
 GET http://localhost:8000/api/users?page=1&limit=100 HTTP/1.1
 
 Content-Type: application/json
+
 

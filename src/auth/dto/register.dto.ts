@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { CategoryEnum } from "src/category/category.entity";
 
 export class RegisterDTO {
     @IsNotEmpty()
@@ -25,5 +26,8 @@ export class RegisterDTO {
 
     @IsNotEmpty()
     phone_number: string;
+
+    @IsNotEmpty()
+    category: CategoryEnum;
 }
 

@@ -29,6 +29,12 @@ export class Person {
     @Column({ name: "phonenumber2", nullable: true, length: 50 })
     phoneNumber2: string;
 
+    @Column({ name: "resume_file_path", nullable: true, type: "varchar", length: 255 })
+    resumeFilePath: string;
+
+    @Column({ name: "resume_file_blob", nullable: true, type: "bytea" })
+    resumeFileBlob: Buffer;
+
     @ManyToMany(() => JobOpportunity, jobOpportunity => jobOpportunity.applicants)
     jobOpportunities: JobOpportunity[]
 

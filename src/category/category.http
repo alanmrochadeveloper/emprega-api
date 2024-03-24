@@ -1,0 +1,27 @@
+### POST new Category Candidato
+
+POST http://localhost:8000/api/category HTTP/1.1
+Content-Type: application/json
+
+{
+    "value": "Candidato"
+}
+
+### POST new Category Anunciante
+
+POST http://localhost:8000/api/category HTTP/1.1
+Content-Type: application/json
+
+{
+    "value": "Anunciante"
+}
+
+### POST new Category Admin
+
+POST http://localhost:8000/api/category HTTP/1.1
+Content-Type: application/json
+
+{
+    "value": "Admin"
+}
+
