@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
 import { Person } from "src/person/person.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterInsert, BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Entity } from "typeorm/decorator/entity/Entity";
 
 @Entity("user")
@@ -30,6 +30,16 @@ export class User {
 
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @BeforeInsert()
+    beforeInsert() {
+        console.log("Usuario sendo criado, email = ", this.email)
+    }
+
+    @AfterInsert()
+    afterInsert() {
+        console.log("Usuario foi criado com sucesso")
+    }
 
 }
 

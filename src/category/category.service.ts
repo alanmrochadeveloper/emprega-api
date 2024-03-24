@@ -14,5 +14,9 @@ export class CategoryService {
     async create(createCategoryDto: CreateCategoryDto) {
         return this.categoryRepository.save(createCategoryDto);
     }
+
+    async getByValue(value: CategoryEnum): Promise<Category> {
+        return await this.categoryRepository.findOneBy({ value })
+    }
 }
 

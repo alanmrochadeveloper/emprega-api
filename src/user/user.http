@@ -21,9 +21,9 @@ POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name":"Teste 3",
+    "first_name":"Teste 9",
     "last_name":"Testes teste",
-    "email": "teste89182310122@gmail.com",
+    "email": "teste91852348382938412@gmail.com",
     "password": "@Teste321",
     "password_confirm": "@Teste321",
     "address": "Rua teste",

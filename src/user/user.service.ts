@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcryptjs";
 import { RegisterDTO } from 'src/auth/dto/register.dto';
+import { CategoryService } from 'src/category/category.service';
 import { Repository } from 'typeorm';
 import { Person } from '../person/person.entity'; // Adjust the import path as necessary
 import { User } from './user.entity';
@@ -10,23 +11,25 @@ import { User } from './user.entity';
 @Injectable()
 export class UserService {
     constructor(@InjectRepository(User) private readonly userRepository: Repository<User>
-        , @InjectRepository(Person) private readonly personRepository: Repository<Person>
-        , private readonly jwtService: JwtService
+        , @InjectRepository(Person) private readonly personRepository: Repository<Person>,
+        private readonly categoryService: CategoryService, private readonly jwtService: JwtService
     ) {
 
     }
 
     async save(registerDto: RegisterDTO) {
-        const { first_name, last_name, address, cpf, phone_number, email, password } = registerDto
+        const { first_name: firstName, last_name: lastName, address, cpf: CPF, phone_number: phoneNumber, email, password, category: categoryValue } = registerDto
         try {
-            const personCreated = await this.personRepository.save({ firstName: first_name, lastName: last_name, address: address, CPF: cpf, phoneNumber: phone_number })
-            console.log({ personCreated })
-            const userCreated = await this.userRepository.save({ email, password, personId: personCreated.id });
-            console.log(
-                { userCreated })
+
+            const category = await this.categoryService.getByValue(categoryValue)
+            const createdPerson = this.personRepository.create({ address, firstName, lastName, CPF, phoneNumber, category })
+            await this.personRepository.save(createdPerson)
+            const createdUser = this.userRepository.create({ email, password, person: createdPerson })
+            createdUser.email = email; createdUser.password = password; createdUser.person = createdPerson;
+            const user = await this.userRepository.save(createdUser);
             return {
-                email: userCreated.email,
-                nome: personCreated.firstName + " " + personCreated.lastName
+                email: user.email,
+                nome: createdPerson.firstName + " " + createdPerson.lastName
             }
         } catch (e) {
             console.error("error = ", { ...e })
