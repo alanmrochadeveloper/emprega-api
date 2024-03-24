@@ -4,36 +4,41 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcryptjs";
 import { RegisterDTO } from 'src/auth/dto/register.dto';
 import { CategoryService } from 'src/category/category.service';
+import { PersonService } from 'src/person/person.service';
 import { Repository } from 'typeorm';
-import { Person } from '../person/person.entity'; // Adjust the import path as necessary
 import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>
-        , @InjectRepository(Person) private readonly personRepository: Repository<Person>,
-        private readonly categoryService: CategoryService, private readonly jwtService: JwtService
+    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>,
+        private readonly personService: PersonService,
+        private readonly categoryService: CategoryService,
+        private readonly jwtService: JwtService
     ) {
 
+    }
+
+    async findOneByEmail(email: string) {
+        return await this.userRepository.findOneBy({ email })
     }
 
     async save(registerDto: RegisterDTO) {
         const { first_name: firstName, last_name: lastName, address, cpf: CPF, phone_number: phoneNumber, email, password, category: categoryValue } = registerDto
         try {
 
-            const category = await this.categoryService.getByValue(categoryValue)
-            const createdPerson = this.personRepository.create({ address, firstName, lastName, CPF, phoneNumber, category })
-            await this.personRepository.save(createdPerson)
-            const createdUser = this.userRepository.create({ email, password, person: createdPerson })
-            createdUser.email = email; createdUser.password = password; createdUser.person = createdPerson;
-            const user = await this.userRepository.save(createdUser);
+            const isExistingAccount = await this.findOneByEmail(email);
+            if (isExistingAccount) throw new BadRequestException(`Esse email já existe, tente um outro email!`);
+            const category = await this.categoryService.getByValue(categoryValue);
+            const person = await this.personService.save({ address, firstName, lastName, CPF, phoneNumber, category })
+            const user = this.userRepository.create({ email, password, person })
+            await this.userRepository.save(user);
             return {
                 email: user.email,
-                nome: createdPerson.firstName + " " + createdPerson.lastName
+                nome: person.firstName + " " + person.lastName
             }
         } catch (e) {
-            console.error("error = ", { ...e })
-            let message = "Um erro ocorreu";
+            console.error(e.message)
+            let message = e.message;
             const code = e.code;
             if (code === "23505") message = "Esse email já existe!"
             throw new BadRequestException(message)
@@ -62,13 +67,21 @@ export class UserService {
         const [results, total] = await this.userRepository.findAndCount({
             take: limit,
             skip: (page - 1) * limit,
+            relations: {
+                person: {
+                    category: true
+                }
+            },
             select: {
                 email: true,
+                id: true,
                 person: {
                     firstName: true,
-                    lastName: true
+                    lastName: true,
+                    category: {
+                        value: true
+                    }
                 }
-
             },
         });
 

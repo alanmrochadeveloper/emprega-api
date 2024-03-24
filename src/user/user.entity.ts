@@ -19,7 +19,7 @@ export class User {
     password: string;
 
     @OneToOne(() => Person)
-    @JoinColumn()
+    @JoinColumn({ name: "person_id" })
     person: Person;
 
     @CreateDateColumn()
@@ -33,12 +33,12 @@ export class User {
 
     @BeforeInsert()
     beforeInsert() {
-        console.log("Usuario sendo criado, email = ", this.email)
+        console.log(`Criando usuário ${this.email} ...`)
     }
 
     @AfterInsert()
     afterInsert() {
-        console.log("Usuario foi criado com sucesso")
+        console.log(`Usuario foi criado com sucesso, id ${this.id}`)
     }
 
 }

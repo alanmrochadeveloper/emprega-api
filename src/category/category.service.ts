@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category, CategoryEnum } from './category.entity';
@@ -16,7 +16,14 @@ export class CategoryService {
     }
 
     async getByValue(value: CategoryEnum): Promise<Category> {
-        return await this.categoryRepository.findOneBy({ value })
+        try {
+            const category = await this.categoryRepository.findOneBy({ value })
+            if (!category) throw new NotFoundException(`Essa categoria não foi encontrada ${value}`);
+            return category;
+        } catch (error: unknown) {
+            let message = (error as { message: string })
+            throw new BadRequestException(`Erro ao buscar o valor ${value} das categorias, ${message}`)
+        }
     }
 }
 

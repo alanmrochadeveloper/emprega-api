@@ -1,6 +1,6 @@
 import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
 import { User } from "src/user/user.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterInsert, BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "../category/category.entity";
 
 @Entity("person")
@@ -52,4 +52,14 @@ export class Person {
 
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @BeforeInsert()
+    beforeInsert() {
+        console.log(`Criando uma pessoa ${this.firstName} ${this.lastName}, cpf = ${this.CPF} do tipo = ${this.category.value.toLocaleLowerCase()} ...`)
+    }
+
+    @AfterInsert()
+    afterInsert() {
+        console.log(`Pessoa criada com sucesso, id ${this.id}`)
+    }
 }

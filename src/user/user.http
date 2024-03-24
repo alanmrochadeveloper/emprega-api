@@ -21,21 +21,21 @@ POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name":"Teste 9",
-    "last_name":"Testes teste",
-    "email": "teste91852348382938412@gmail.com",
-    "password": "@Teste321",
-    "password_confirm": "@Teste321",
-    "address": "Rua teste",
+    "first_name":"Glauco",
+    "last_name":"Ribeiro Pereira",
+    "email": "anunciante512@gmail.com",
+    "password": "@Teste123",
+    "password_confirm": "@Teste123",
+    "address": "Rua alguma",
     "cpf": "12345678900",
     "phone_number": "12345678900",
-    "category":"Candidato"
+    "category":"Anunciante"
 
 }
 
 ###
 
-GET http://localhost:8000/api/users?page=1&limit=100 HTTP/1.1
+GET http://localhost:8000/api/users?page=1&limit=10 HTTP/1.1
 
 Content-Type: application/json
 

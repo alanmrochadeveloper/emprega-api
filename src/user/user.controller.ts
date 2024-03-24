@@ -19,12 +19,12 @@ export class UserController {
 
 
     @Get()
-    async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10, @Query('baseRoute') baseRoute = 'http://localhost:3000/users') {
         limit = limit > 100 ? 100 : limit;
         return this.userService.findAll({
             page,
             limit,
-            route: 'http://localhost:3000/users',
+            route: baseRoute,
         });
     }
 
