@@ -1,6 +1,7 @@
+import { Company } from "src/company/company.entity";
 import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
 import { User } from "src/user/user.entity";
-import { AfterInsert, BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterInsert, BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "../category/category.entity";
 
 @Entity("person")
@@ -39,18 +40,23 @@ export class Person {
     jobOpportunities: JobOpportunity[]
 
     @ManyToOne(() => Category)
+    @JoinColumn({ name: "category_id" })
     category: Category;
+
+    @ManyToMany(() => Company, company => company.advertisers)
+    @JoinTable({ name: "person_company", inverseJoinColumn: { name: "company_id", }, joinColumn: { name: "person_id" } })
+    companies: Company[]
 
     @OneToOne(() => User)
     user: User
 
-    @CreateDateColumn()
+    @CreateDateColumn({ name: "created_at" })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: "updated_at" })
     updatedAt: Date;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ name: "deleted_at" })
     deletedAt: Date;
 
     @BeforeInsert()

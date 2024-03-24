@@ -14,13 +14,13 @@ export class Category {
     @Column({ unique: true, name: "value", type: "enum", enum: CategoryEnum })
     value: CategoryEnum
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: "updated_at" })
     updatedAt: Date;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ name: "created_at" })
     createdAt: Date;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ name: "deleted_at" })
     deletedAt: Date;
 }
 

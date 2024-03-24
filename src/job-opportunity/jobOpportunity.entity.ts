@@ -1,6 +1,6 @@
 import { Company } from "src/company/company.entity";
 import { Person } from "src/person/person.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 enum ModelEnum {
     REMOTE = "remote",
@@ -37,15 +37,16 @@ export class JobOpportunity {
     @ManyToMany(() => Person, person => person.jobOpportunities)
     applicants: Person[]
 
-    @ManyToOne(() => Company, company => company.jobOpportunity)
+    @ManyToOne(() => Company, company => company.jobOpportunities)
+    @JoinColumn({ name: "company_id" })
     company: Company;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ name: "created_at" })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: "updated_at" })
     updatedAt: Date;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ name: "deleted_at" })
     deletedAt: Date;
 }

@@ -1,5 +1,6 @@
 import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Person } from "src/person/person.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("company")
 export class Company {
@@ -19,17 +20,23 @@ export class Company {
     CNPJ: string;
 
     @OneToMany(() => JobOpportunity, jobOpportunity => jobOpportunity.company)
-    jobOpportunity: JobOpportunity[];
+    jobOpportunities: JobOpportunity[];
+
+    @ManyToMany(() => Person, person => person)
+    advertisers: Person[]
 
     @Column({ type: "varchar", nullable: true })
     logo: string;
 
-    @CreateDateColumn()
+    @Column({ name: "logo_file", type: "bytea", nullable: true })
+    logoFile: Buffer;
+
+    @CreateDateColumn({ name: "created_at" })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: "updated_at" })
     updatedAt: Date;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ name: "deleted_at" })
     deletedAt: Date;
 }

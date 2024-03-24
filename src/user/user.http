@@ -21,9 +21,26 @@ POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name":"Glauco",
-    "last_name":"Ribeiro Pereira",
-    "email": "anunciante512@gmail.com",
+    "first_name":"Macebo",
+    "last_name":"Tulio Silva",
+    "email": "Macb123@gmail.com",
+    "password": "@Teste123",
+    "password_confirm": "@Teste123",
+    "address": "Rua alguma",
+    "cpf": "12345678900",
+    "phone_number": "12345678900",
+    "category":"Candidato"
+
+}
+
+### pessoa anunciante
+POST http://localhost:8000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "first_name":"Alexo",
+    "last_name":"Anunciante master",
+    "email": "anunciaemprego@gmail.com",
     "password": "@Teste123",
     "password_confirm": "@Teste123",
     "address": "Rua alguma",
