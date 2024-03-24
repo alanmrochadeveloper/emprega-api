@@ -11,14 +11,19 @@ enum CategoryEnum {
 export class Category {
     @PrimaryGeneratedColumn("uuid")
     id: string;
+
     @OneToMany(() => Person, person => person.category)
     people: Person[]
+
     @Column({ name: "value", type: "enum", enum: CategoryEnum })
     value: CategoryEnum
+
     @UpdateDateColumn()
     updatedAt: Date;
+
     @CreateDateColumn()
     createdAt: Date;
+
     @DeleteDateColumn()
     deletedAt: Date;
 }

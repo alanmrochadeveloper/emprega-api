@@ -1,5 +1,6 @@
 import { Company } from "src/company/company.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Person } from "src/person/person.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 enum ModelEnum {
     REMOTE = "remote",
@@ -12,16 +13,16 @@ export class JobOpportunity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column({ type: "text", nullable: false, length: 1000 })
+    @Column({ type: "varchar", nullable: false })
     description: string;
 
-    @Column({ type: "text", nullable: false, length: 1000 })
+    @Column({ type: "varchar", nullable: false })
     requirements: string;
 
-    @Column({ type: "text", nullable: false, length: 1000 })
+    @Column({ type: "varchar", nullable: false })
     benefits: string;
 
-    @Column({ type: "decimal", nullable: false, precision: 10, scale: 2 })
+    @Column({ type: "decimal", nullable: true, precision: 10, scale: 2 })
     salary: number;
 
     @Column({ type: "boolean", nullable: false, default: false })
@@ -32,6 +33,9 @@ export class JobOpportunity {
 
     @Column({ type: "boolean", nullable: false, default: false })
     isActive: boolean;
+
+    @ManyToMany(() => Person, person => person.jobOpportunities)
+    applicants: Person[]
 
     @ManyToOne(() => Company, company => company.jobOpportunity)
     company: Company;
