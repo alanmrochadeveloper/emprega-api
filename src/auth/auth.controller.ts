@@ -20,7 +20,7 @@ export class AuthController {
         }
         if (password !== password_confirm) throw new BadRequestException("As senhas não coincidem!")
         const hashed = await bcrypt.hash(body.password, 12)
-        return this.userService.save({ ...data, password: hashed, password_confirm })
+        return this.userService.create({ ...data, password: hashed, password_confirm })
     }
 
     @Post("signin")

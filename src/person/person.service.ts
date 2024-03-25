@@ -15,4 +15,14 @@ export class PersonService {
         await this.personRepository.save(person);
         return person;
     }
+
+    async findOneByCNPJ(cnpj: string) {
+        if (!cnpj) return null;
+        return await this.personRepository.findOneBy({ cnpj })
+    }
+
+    async findOneByCPF(cpf: string) {
+        if (!cpf) return null;
+        return await this.personRepository.findOneBy({ cpf })
+    }
 }

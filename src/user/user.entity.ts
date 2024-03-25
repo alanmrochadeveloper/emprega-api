@@ -14,6 +14,9 @@ export class User {
     @Column({ type: "varchar", nullable: true })
     avatar: string;
 
+    @Column({ type: "bytea", nullable: true, name: "avatar_file" })
+    avatarFile: Buffer;
+
     @Exclude()
     @Column()
     password: string;

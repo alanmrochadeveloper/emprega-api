@@ -1,49 +1,78 @@
 import { Optional } from "@nestjs/common";
-import { IsEmail, IsNotEmpty, MaxLength } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsEmail, IsNotEmpty } from "class-validator";
 import { CategoryEnum } from "src/category/category.entity";
+import { EnumPersonType } from "src/person/person.entity";
+import { normalizeCnpj } from "src/utils/normalizeCnpj";
+import { normalizeCpf } from "src/utils/normalizeCpf";
 
 export class RegisterDTO {
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "O nome não pode estar vazio" })
     first_name: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "O sobrenome não pode estar vazio" })
     last_name: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "O email é um campo obrigatório!" })
     @IsEmail()
     email: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "A senha não pode estar vazia!" })
     password: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "A senha de confirmação não pode estar vazia!" })
     password_confirm?: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "Endereço não pode estar vazio!" })
     address: string;
 
-    @IsNotEmpty()
+    @Optional()
+    @Transform(({ value }) => normalizeCpf(value))
     cpf: string;
 
-    @IsNotEmpty()
+    @Optional()
+    avatarPath: string
+
+    @Optional()
+    avatarFile: Buffer
+
+    @IsNotEmpty({ message: "Tipo da pessoa não pode estar vazio!" })
+    personType: EnumPersonType
+
+    @IsNotEmpty({ message: "Número de telefone não pode ser vazio!" })
     phone_number: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "Categoria deve ser preenchida!" })
     category: CategoryEnum;
 
     @Optional()
-    @MaxLength(255)
     tradingName: string;
 
     @Optional()
-    @MaxLength(255)
     companyName: string;
 
     @Optional()
+    @Transform(({ value }: { value: string }) => value.replaceAll(".", ""), { toPlainOnly: true })
     stateInscr: string;
 
     @Optional()
-    CNPJ: string;
+    @Transform(({ value }) => normalizeCnpj(value), { toPlainOnly: true })
+    cnpj: string;
+
+    @Optional()
+    @Transform(({ value }) => normalizeCnpj(value), { toPlainOnly: true })
+    personCNPJ: string;
+
+
+    @Optional()
+    tradingNamePerson?: string;
+
+    @Optional()
+    companyNamePerson: string;
+
+    @Optional()
+    @Transform(({ value }: { value: string }) => value.replaceAll(".", ""), { toPlainOnly: true })
+    stateInscrPerson: string;
 
     @Optional()
     logo: string;

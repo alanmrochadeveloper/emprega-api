@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from 'src/category/category.module';
+import { Company } from 'src/company/company.entity';
+import { CompanyModule } from 'src/company/company.module';
+import { CompanyService } from 'src/company/company.service';
 import { Person } from 'src/person/person.entity';
 import { PersonModule } from 'src/person/person.module';
 import { PersonService } from 'src/person/person.service';
@@ -10,9 +13,9 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Person]), CategoryModule, PersonModule,
+  imports: [TypeOrmModule.forFeature([User, Person, Company]), CategoryModule, PersonModule, CompanyModule,
   JwtModule.register({ secret: 'secret', signOptions: { expiresIn: "1d" } })],
-  providers: [UserService, PersonService],
+  providers: [UserService, PersonService, CompanyService],
   controllers: [UserController],
   exports: [UserService]
 })

@@ -13,11 +13,11 @@ export class Company {
     @Column({ name: "company_name", length: 150 })
     companyName: string;
 
-    @Column({ name: "state_inscr", length: 12 })
+    @Column({ name: "state_inscr", length: 12, unique: true })
     stateInscr: string;
 
-    @Column({ name: "cnpj", length: 14 })
-    CNPJ: string;
+    @Column({ name: "cnpj", length: 14, unique: true })
+    cnpj: string;
 
     @OneToMany(() => JobOpportunity, jobOpportunity => jobOpportunity.company)
     jobOpportunities: JobOpportunity[];
