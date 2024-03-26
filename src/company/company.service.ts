@@ -14,8 +14,14 @@ export class CompanyService {
         return await this.companyRepository.findOneBy({ cnpj })
     }
 
+    async findOneByStateInscr(stateInscr: string) {
+        if (!stateInscr) return null;
+        return await this.companyRepository.findOneBy({ stateInscr })
+    }
+
     async create(company: Partial<Company>) {
         const companyToBeStored = this.companyRepository.create(company)
         return await this.companyRepository.save(companyToBeStored)
     }
+
 }

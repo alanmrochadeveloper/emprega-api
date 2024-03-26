@@ -16,7 +16,7 @@ POST http://localhost:8000/api/auth/signout
 Content-Type: application/json
 
 
-### pessoa anunciante
+### pessoa juridica anunciante
 
 POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
@@ -36,6 +36,30 @@ Content-Type: application/json
     "companyNamePerson": "Empresa Da Incrivel",
     "stateInscrPerson":"633.488.055.573"
 }
+
+### pessoa fisica anunciante com empresa a parte
+
+POST http://localhost:8000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "first_name":"Mariana",
+    "last_name":"Costa Lima",
+    "email": "mariana.costa@dominio.com.br",
+    "password": "M@riana2023",
+    "password_confirm": "M@riana2023",
+    "address": "Av. Paulista, 1578, São Paulo, SP",
+    "cpf": "123.456.789-09",
+    "phone_number": "11999887766",
+    "category":"Anunciante",
+    "personType": "Física",
+    "tradingName": "Vendas Top",
+    "companyName": "Top Vendas Comercial Ltda.",
+    "stateInscr": "987.654.321.000",
+    "cnpj": "12.345.678/0001-99",
+    "logo": "logo_top_vendas.png"
+}
+
 
 ###
 

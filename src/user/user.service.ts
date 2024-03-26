@@ -10,6 +10,9 @@ import { PersonService } from 'src/person/person.service';
 import { validateCNPJ } from 'src/utils/cnpjValidation';
 import { validateCPF } from 'src/utils/cpfValidation';
 import { normalizeCnpj } from 'src/utils/normalizeCnpj';
+import { normalizeCpf } from 'src/utils/normalizeCpf';
+import { normalizeStateInscr } from 'src/utils/normalizeStateInscr';
+import { validateStateInscr } from 'src/utils/stateInscrValidation';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 
@@ -29,13 +32,20 @@ export class UserService {
     }
 
     async create(registerDto: RegisterDTO) {
-        const { first_name: firstName, last_name: lastName, address, cpf, phone_number: phoneNumber, email, password, category: categoryValue, cnpj, personType, companyNamePerson, personCNPJ: personCNPJDTO, tradingNamePerson, avatarPath: avatar, avatarFile, companyName, logo, logoFile, stateInscr, tradingName, stateInscrPerson: stateInscrPersonDTO } = registerDto
+        const { first_name: firstName, last_name: lastName, address, cpf: cpfDTO, phone_number: phoneNumber, email, password, category: categoryValue, cnpj: cnpjDTO, personType, companyNamePerson, personCNPJ: personCNPJDTO, tradingNamePerson, avatarPath: avatar, avatarFile, companyName, logo, logoFile, stateInscr: stateInscrDTO, tradingName, stateInscrPerson: stateInscrPersonDTO } = registerDto
         //TODO: use this way to normalize, till I figure out how to fix transform itself in DTOs
         const personCNPJ = normalizeCnpj(personCNPJDTO)
-        const stateInscrPerson = normalizeCnpj(stateInscrPersonDTO)
+        const stateInscrPerson = normalizeStateInscr(stateInscrPersonDTO)
+        const stateInscr = normalizeStateInscr(stateInscrDTO)
+        const cpf = normalizeCpf(cpfDTO)
+        const cnpj = normalizeCnpj(cnpjDTO)
         try {
             if (!cpf && !personCNPJ) throw new BadRequestException(`O documento cpf ou cnpj não foram fornecidos`)
             if (cpf && !validateCPF((cpf))) throw new BadRequestException(`CPF não é válido!`)
+            if (stateInscrDTO && !validateStateInscr(stateInscrDTO)) throw new BadRequestException(`Inscrição Estadual não é válida!`)
+
+            const isInscribedState = await this.companyService.findOneByStateInscr(stateInscr)
+            if (isInscribedState) throw new BadRequestException(`Esta inscrição estadual já está em uso!`)
 
             const isExistingPerson = await this.personService.findOneByCPF(cpf)
 
@@ -76,8 +86,11 @@ export class UserService {
             if (isExistingCompanyPerson) throw new BadRequestException(`Esse cnpj já cadastrado`);
 
             const legalPerson = await this.personService.save({
+                cpf: cpf,
+                firstName: firstName,
+                lastName: lastName,
                 address, category, cnpj: personCNPJ, companyName: companyNamePerson, tradingName: tradingNamePerson, type: personType,
-                phoneNumber, stateInscr: stateInscrPerson
+                phoneNumber, stateInscr: stateInscrPerson,
             })
 
             const newFirstCompany = await this.companyService.create({ cnpj: cnpj ?? personCNPJ, companyName: companyName ?? companyNamePerson, logo: logo ?? avatar, logoFile: logoFile ?? avatarFile, stateInscr: stateInscr ?? stateInscrPerson, tradingName: tradingName ?? tradingNamePerson })
@@ -88,9 +101,16 @@ export class UserService {
 
             await this.userRepository.save(user)
 
+            await this.personService.save(legalPerson)
+
             return {
                 email: user.email,
-                nomeFantasia: legalPerson.tradingName, razaoSocial: legalPerson.companyName
+                nomeFantasia: legalPerson.tradingName,
+                razaoSocial: legalPerson.companyName,
+                firstName: legalPerson.firstName,
+                lastName: legalPerson.lastName,
+                cpf: legalPerson.cpf,
+                cnpj: legalPerson.cnpj
             }
 
 
@@ -125,7 +145,9 @@ export class UserService {
             skip: (page - 1) * limit,
             relations: {
                 person: {
-                    category: true
+                    category: true,
+                    companies: true,
+                    jobOpportunities: true
                 }
             },
             select: {
@@ -136,9 +158,16 @@ export class UserService {
                     lastName: true,
                     category: {
                         value: true
-                    }
+                    },
+                    companies: {
+                        cnpj: true,
+                        companyName: true,
+                        stateInscr: true,
+                        tradingName: true
+                    },
+                    jobOpportunities: true
                 }
-            },
+            }
         });
 
         return {

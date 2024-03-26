@@ -1,6 +1,6 @@
 import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
 import { Person } from "src/person/person.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("company")
 export class Company {
@@ -23,6 +23,7 @@ export class Company {
     jobOpportunities: JobOpportunity[];
 
     @ManyToMany(() => Person, person => person)
+    @JoinTable({ name: "company_advertiser", joinColumn: { name: "company_id" }, inverseJoinColumn: { name: "person_id" } })
     advertisers: Person[]
 
     @Column({ type: "varchar", nullable: true })

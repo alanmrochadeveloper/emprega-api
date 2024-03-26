@@ -81,7 +81,7 @@ export class Person {
 
     @BeforeInsert()
     beforeInsert() {
-        console.log(`Criando uma Pessoa ${this.type} ${this.firstName ?? this.companyName} ${this.lastName ?? this.tradingName}, documento:  ${this.cpf ?? this.cnpj} do tipo: ${this.category.value.toLocaleLowerCase()} ...`)
+        console.log(`Criando uma Pessoa ${this.type} ${this.firstName ?? this.companyName ?? "Não informado"} ${this.lastName ?? this.tradingName ?? "Não informado"}, documento:  ${this.cpf ?? this.cnpj ?? "Não informado"} do tipo: ${this.category.value.toLocaleLowerCase()} ...`)
     }
 
     @AfterInsert()
