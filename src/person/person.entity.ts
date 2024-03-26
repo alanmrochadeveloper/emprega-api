@@ -57,6 +57,7 @@ export class Person {
     resumeFileBlob: Buffer;
 
     @ManyToMany(() => JobOpportunity, jobOpportunity => jobOpportunity.applicants)
+    @JoinTable({ name: "person_job_opportunity", joinColumn: { name: "person_id" }, inverseJoinColumn: { name: "job_opportunity_id" } })
     jobOpportunities: JobOpportunity[]
 
     @ManyToOne(() => Category)
