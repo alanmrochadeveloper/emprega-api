@@ -146,8 +146,10 @@ export class UserService {
             relations: {
                 person: {
                     category: true,
-                    companies: true,
-                    jobOpportunities: true
+                    jobOpportunities: true,
+                    companies: {
+                        jobOpportunities: true
+                    },
                 }
             },
             select: {
@@ -163,7 +165,8 @@ export class UserService {
                         cnpj: true,
                         companyName: true,
                         stateInscr: true,
-                        tradingName: true
+                        tradingName: true,
+                        jobOpportunities: true,
                     },
                     jobOpportunities: true
                 }
