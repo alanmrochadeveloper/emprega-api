@@ -1,12 +1,11 @@
 import { Exclude } from "class-transformer";
+import { BaseEntity } from "src/base/entity.base";
 import { Person } from "src/person/person.entity";
-import { AfterInsert, BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterInsert, BeforeInsert, Column, JoinColumn, OneToOne } from "typeorm";
 import { Entity } from "typeorm/decorator/entity/Entity";
 
 @Entity("user")
-export class User {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+export class User extends BaseEntity {
 
     @Column({ unique: true })
     email: string;
@@ -24,15 +23,6 @@ export class User {
     @OneToOne(() => Person)
     @JoinColumn({ name: "person_id" })
     person: Person;
-
-    @CreateDateColumn({ name: "created_at" })
-    createdAt: Date;
-
-    @UpdateDateColumn({ name: "updated_at" })
-    updatedAt: Date;
-
-    @DeleteDateColumn({ name: "deleted_at" })
-    deletedAt: Date;
 
     @BeforeInsert()
     beforeInsert() {

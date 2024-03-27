@@ -1,11 +1,10 @@
+import { BaseEntity } from "src/base/entity.base";
 import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
 import { Person } from "src/person/person.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany } from "typeorm";
 
 @Entity("company")
-export class Company {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+export class Company extends BaseEntity {
 
     @Column({ name: "trading_name", length: 150 })
     tradingName: string;
@@ -30,13 +29,4 @@ export class Company {
 
     @Column({ name: "logo_file", type: "bytea", nullable: true })
     logoFile: Buffer;
-
-    @CreateDateColumn({ name: "created_at" })
-    createdAt: Date;
-
-    @UpdateDateColumn({ name: "updated_at" })
-    updatedAt: Date;
-
-    @DeleteDateColumn({ name: "deleted_at" })
-    deletedAt: Date;
 }

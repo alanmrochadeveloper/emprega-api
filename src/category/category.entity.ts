@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity } from "src/base/entity.base";
+import { Column, Entity } from "typeorm";
 
 export enum CategoryEnum {
     Admin = "Admin",
@@ -7,20 +8,10 @@ export enum CategoryEnum {
 }
 
 @Entity("category")
-export class Category {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+export class Category extends BaseEntity {
 
     @Column({ unique: true, name: "value", type: "enum", enum: CategoryEnum })
     value: CategoryEnum
 
-    @UpdateDateColumn({ name: "updated_at" })
-    updatedAt: Date;
-
-    @CreateDateColumn({ name: "created_at" })
-    createdAt: Date;
-
-    @DeleteDateColumn({ name: "deleted_at" })
-    deletedAt: Date;
 }
 
