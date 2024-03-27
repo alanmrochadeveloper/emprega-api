@@ -1,0 +1,25 @@
+### Create Job Opportunity
+
+POST http://localhost:8000/api/job-opportunity HTTP/1.1
+Content-Type: application/json
+
+{
+    "companyId": "00b1b1d6-45bf-4f33-8e64-49e4e8cd5593",
+    "title": "Vaga Google Staff Engineer",
+    "description": "Vaga boa para quem é bom",
+    "requirements": "Requesitos Mínimos",
+    "salary": 50000,
+    "location": "Minas Gegrain",
+    "benefits": "Alguns beneficios",
+    "salaryRange": { "min": 40, "max": 50},
+    "salaryToBeAgreed": false,
+    "model": "on_site",
+    "isActive": true
+}
+
+
+### Get Job Opportunities with Pagination
+
+GET http://localhost:8000/api/job-opportunity?page=3&limit=2 HTTP/1.1
+Content-Type: application/json
+

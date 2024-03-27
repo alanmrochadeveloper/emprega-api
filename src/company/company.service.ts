@@ -24,4 +24,9 @@ export class CompanyService {
         return await this.companyRepository.save(companyToBeStored)
     }
 
+    async findOneById(id: string) {
+        return await this.companyRepository.findOneBy({ id })
+    }
+
 }
+
