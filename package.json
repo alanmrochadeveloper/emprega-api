@@ -17,12 +17,20 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "mock:create-user-applicant": "node src/user/mockApiCalls/create-applicant-person.mjs",
+    "mock:create-user-hiring-legal-person": "node src/user/mockApiCalls/create-hiring-legal-person.mjs",
+    "mock:create-user-hiring-person-with-company": "node src/user/mockApiCalls/create-hiring-person-with-company.mjs",
+    "mock:create-category-applicant": "to be implemented",
+    "mock:create-category-advertiser": "to be implemented",
+    "mock:create-category-admin": "to be implemented"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
     "@types/bcryptjs": "^2.4.6",

@@ -12,8 +12,8 @@ const options = {
         first_name: faker.person.firstName(),
         last_name: faker.person.lastName(),
         email: faker.internet.email(),
-        password: 'M@riana2023', // Consider using faker for password generation for more dynamic data
-        password_confirm: 'M@riana2023', // Consider using faker for password confirmation as well
+        password: 'M@riana2023',
+        password_confirm: 'M@riana2023',
         address: faker.location.streetAddress(),
         cpf: generateFakeValidCpfV2(),
         phone_number: faker.phone.number().replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3"),
