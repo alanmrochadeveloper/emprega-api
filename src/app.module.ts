@@ -8,6 +8,7 @@ import { CompanyModule } from './company/company.module';
 import { JobOpportunityModule } from './job-opportunity/job-opportunity.module';
 import { PersonModule } from './person/person.module';
 import { UserModule } from './user/user.module';
+import { AuthorizedDocumentsModule } from './authorized-documents/authorized-documents.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -20,7 +21,7 @@ import { UserModule } from './user/user.module';
     autoLoadEntities: true,
     synchronize: true
   }),
-    PersonModule, CategoryModule, UserModule, AuthModule, JobOpportunityModule, CompanyModule, UserModule],
+    PersonModule, CategoryModule, UserModule, AuthModule, JobOpportunityModule, CompanyModule, UserModule, AuthorizedDocumentsModule],
   controllers: [AppController],
   providers: [AppService],
 })

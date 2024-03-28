@@ -24,7 +24,8 @@
     "mock:create-category-applicant": "to be implemented",
     "mock:create-category-advertiser": "to be implemented",
     "mock:create-category-admin": "to be implemented",
-    "mock:create-job-opportunity": "node src/job-opportunity/mockApi/create.mjs"
+    "mock:create-job-opportunity": "node src/job-opportunity/mockApi/create.mjs",
+    "mock:apply-to-job-opportunity": "node src/job-opportunity/mockApi/apply-to-job-opportunity.mjs"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.2",

@@ -31,6 +31,11 @@ export class UserService {
         return await this.userRepository.findOneBy({ email })
     }
 
+    async findOneById(id: string) {
+        return await this.userRepository.findOneBy({ id })
+    }
+
+
     async create(registerDto: RegisterDTO) {
         const { first_name: firstName, last_name: lastName, address, cpf: cpfDTO, phone_number: phoneNumber, email, password, category: categoryValue, cnpj: cnpjDTO, personType, companyNamePerson, personCNPJ: personCNPJDTO, tradingNamePerson, avatarPath: avatar, avatarFile, companyName, logo, logoFile, stateInscr: stateInscrDTO, tradingName, stateInscrPerson: stateInscrPersonDTO } = registerDto
         //TODO: use this way to normalize, till I figure out how to fix transform itself in DTOs

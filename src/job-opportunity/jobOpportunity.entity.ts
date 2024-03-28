@@ -39,7 +39,7 @@ export class JobOpportunity extends BaseEntity {
     @Column({ type: "enum", nullable: false, default: ModelEnum.ON_SITE, enum: ModelEnum })
     model: ModelEnum;
 
-    @ManyToMany(() => Person, person => person.jobOpportunities)
+    @ManyToMany(() => Person, person => person.jobOpportunities, { eager: true })
     applicants: Person[]
 
     @ManyToOne(() => Company, company => company.jobOpportunities)

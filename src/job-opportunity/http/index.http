@@ -17,9 +17,18 @@ Content-Type: application/json
     "isActive": true
 }
 
+### Apply to Job Opportunity
+
+POST http://localhost:8000/api/job-opportunity/75ddc64e-3001-4f96-8d7a-886c39062143/apply HTTP/1.1
+Content-Type: application/json
+
+{
+    "userId": "e47539f9-78f7-46ed-bc6f-9fd1421beaa8"
+}
+
 
 ### Get Job Opportunities with Pagination
 
-GET http://localhost:8000/api/job-opportunity?page=3&limit=2 HTTP/1.1
+GET http://localhost:8000/api/job-opportunity?page=1&limit=10 HTTP/1.1
 Content-Type: application/json
 

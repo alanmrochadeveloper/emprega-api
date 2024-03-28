@@ -1,3 +1,4 @@
+import { AuthorizedDocuments } from "src/authorized-documents/authorized-documents.entity";
 import { BaseEntity } from "src/base/entity.base";
 import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
 import { Person } from "src/person/person.entity";
@@ -21,7 +22,7 @@ export class Company extends BaseEntity {
     @OneToMany(() => JobOpportunity, jobOpportunity => jobOpportunity.company)
     jobOpportunities: JobOpportunity[];
 
-    @ManyToMany(() => Person, person => person)
+    @ManyToMany(() => Person, person => person.companies)
     advertisers: Person[]
 
     @Column({ type: "varchar", nullable: true })
@@ -29,4 +30,7 @@ export class Company extends BaseEntity {
 
     @Column({ name: "logo_file", type: "bytea", nullable: true })
     logoFile: Buffer;
+
+    @OneToMany(() => AuthorizedDocuments, authorizedDocuments => authorizedDocuments.company)
+    authorizedDocuments: AuthorizedDocuments[];
 }

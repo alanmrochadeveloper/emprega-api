@@ -25,4 +25,9 @@ export class PersonService {
         if (!cpf) return null;
         return await this.personRepository.findOneBy({ cpf })
     }
+
+    async findOneById(id: string) {
+        return await this.personRepository.findOneBy({ id })
+    }
 }
+
