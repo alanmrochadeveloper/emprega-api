@@ -1,8 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcryptjs";
 import { RegisterDTO } from 'src/auth/dto/register.dto';
+import { AuthorizedDocumentsStatus } from 'src/authorized-documents/authorized-documents.entity';
+import { AuthorizedDocumentsService } from 'src/authorized-documents/authorized-documents.service';
+import { CategoryEnum } from 'src/category/category.entity';
 import { CategoryService } from 'src/category/category.service';
 import { CompanyService } from 'src/company/company.service';
 import { EnumPersonType } from 'src/person/person.entity';
@@ -19,9 +22,10 @@ import { User } from './user.entity';
 @Injectable()
 export class UserService {
     constructor(@InjectRepository(User) private readonly userRepository: Repository<User>,
+        @Inject(forwardRef(() => CompanyService)) private readonly companyService: CompanyService,
         private readonly personService: PersonService,
         private readonly categoryService: CategoryService,
-        private readonly companyService: CompanyService,
+        private readonly authorizedDocumentsService: AuthorizedDocumentsService,
         private readonly jwtService: JwtService
     ) {
 
@@ -52,6 +56,7 @@ export class UserService {
             if (!cpf && !personCNPJ) throw new BadRequestException(`O documento cpf ou cnpj não foram fornecidos`)
             if (cpf && !validateCPF((cpf))) throw new BadRequestException(`CPF não é válido!`)
             if (stateInscrDTO && !validateStateInscr(stateInscrDTO)) throw new BadRequestException(`Inscrição Estadual não é válida!`)
+            if (personCNPJ && !validateCNPJ(personCNPJ)) throw new BadRequestException(`CNPJ não é válido!`)
 
             const isInscribedState = await this.companyService.findOneByStateInscr(stateInscr)
             if (isInscribedState) throw new BadRequestException(`Esta inscrição estadual já está em uso!`)
@@ -59,8 +64,6 @@ export class UserService {
             const isExistingPerson = await this.personService.findOneByCPF(cpf)
 
             if (isExistingPerson) throw new BadRequestException(`Esse cpf já se encontra em uso!`)
-
-            if (personCNPJ && !validateCNPJ(personCNPJ)) throw new BadRequestException(`CNPJ não é válido!`)
 
             const isExistingPersonLegal = await this.personService.findOneByCNPJ(personCNPJ)
             if (isExistingPersonLegal) throw new BadRequestException(`O cnpj já está em uso!`)
@@ -71,9 +74,9 @@ export class UserService {
             const user = this.userRepository.create({ email, password, avatar, avatarFile })
 
             const category = await this.categoryService.getByValue(categoryValue);
-            if (category.value === "Anunciante" && cnpj == null && personCNPJ == null) throw new BadRequestException(`O anunciante deve ter uma empresa  para os anunciar as vagas!`)
+            if (category.value === "Anunciante" && cnpj == null && personCNPJ == null) throw new BadRequestException(`O anunciante deve ter uma empresa para anunciar as vagas!`)
 
-            if (personType === EnumPersonType.Fisica && category.value !== "Anunciante") {
+            if (personType === EnumPersonType.Fisica && category.value === CategoryEnum.Candidato) {
                 const person = await this.personService.save({ address, firstName, lastName, cpf: cpf, phoneNumber, category, type: personType })
                 user.person = person;
                 await this.userRepository.save(user);
@@ -89,7 +92,20 @@ export class UserService {
             if (isExisttingLegalPerson) throw new BadRequestException(`Esse cnpj já se encontra em uso!`)
 
             const isExistingCompany = await this.companyService.findByCNPJ(cnpj)
-            if (isExistingCompany) throw new BadRequestException(`Essa empresa já está cadastrada, peça para administrador da mesma autorizar seu cpf ou cnpj  para cadastrar em nome da empresa!`)
+            const isExistingAuthorizedDocument = await this.authorizedDocumentsService.findOneByCompanyIdAndDocument(isExistingCompany.id, cpf) || await this.authorizedDocumentsService.findOneByCompanyIdAndDocument(isExistingCompany.id, personCNPJ)
+            if (isExistingCompany && !isExistingAuthorizedDocument) {
+                this.authorizedDocumentsService.create({ company: isExistingCompany, document: cpf ?? personCNPJ, status: AuthorizedDocumentsStatus.PENDING })
+                throw new BadRequestException(`Essa empresa já está cadastrada, peça para administrador da mesma autorizar seu cpf ou cnpj  para cadastrar em nome da empresa!`)
+            }
+
+            if (isExistingCompany && isExistingAuthorizedDocument) {
+                if (isExistingAuthorizedDocument.status === AuthorizedDocumentsStatus.PENDING) {
+                    throw new BadRequestException(`Esse documento ainda não foi autorizado pelo administrador da empresa!`)
+                }
+                if (isExistingAuthorizedDocument.status === AuthorizedDocumentsStatus.DENIED) {
+                    throw new BadRequestException(`Esse documento foi negado pelo administrador da empresa!`)
+                }
+            }
 
             const isExistingCompanyPerson = await this.personService.findOneByCNPJ(personCNPJ)
             if (isExistingCompanyPerson) throw new BadRequestException(`Esse cnpj já cadastrado`);

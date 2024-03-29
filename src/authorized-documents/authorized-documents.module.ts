@@ -7,6 +7,7 @@ import { AuthorizedDocumentsService } from './authorized-documents.service';
 @Module({
   imports: [TypeOrmModule.forFeature([AuthorizedDocuments])],
   providers: [AuthorizedDocumentsService],
-  controllers: [AuthorizedDocumentsController]
+  controllers: [AuthorizedDocumentsController],
+  exports: [AuthorizedDocumentsService]
 })
 export class AuthorizedDocumentsModule { }

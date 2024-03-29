@@ -1,9 +1,11 @@
+### login user anunciante
+
 POST http://localhost:8000/api/auth/signin HTTP/1.1
 Content-Type: application/json
 
 {
-    "email":"a@gmail.com",
-    "password":"a"    
+    "email":"Mercia_Costa90@bol.com.br",
+    "password":"M@riana2023"    
 }
 
 ###

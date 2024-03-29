@@ -1,0 +1,26 @@
+### create company for an existing user
+
+POST http://localhost:8000/api/company
+Content-Type: application/json
+
+{
+    "companyName": "Empresa nova para esse usuario anunciante",
+    "tradingName": "Empresa nova",
+    "cnpj": "17.821.656/0001-78",
+    "stateInscr": "399.233.992.542",
+    "userId": "1ddcb868-dbe2-414a-9787-142c95cc35e3"
+}
+
+
+### find all companies with filter
+
+GET http://localhost:8000/api/company?page=1&limit=10
+
+
+### find all companies with filter with stateinscr
+
+GET http://localhost:8000/api/company?page=1&limit=10&stateInscr=783553170
+
+### find all companies with filter with cnpj
+
+GET http://localhost:8000/api/company?page=1&limit=10&cnpj=79607191000104
