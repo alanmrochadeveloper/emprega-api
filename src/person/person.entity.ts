@@ -23,6 +23,9 @@ export class Person extends BaseEntity {
     @Column({ name: "address", length: 250 })
     address: string;
 
+    @Column({ name: "birth_date", type: "date", nullable: true })
+    birthDate: Date;
+
     @Column({ name: "cpf", length: 11, nullable: true, unique: true })
     cpf: string;
 
