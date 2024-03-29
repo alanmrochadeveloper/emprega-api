@@ -1,5 +1,6 @@
 import { BaseEntity } from "src/base/entity.base";
 import { Company } from "src/company/company.entity";
+import { JobCategory } from "src/job-category/job-category.entity";
 import { Person } from "src/person/person.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
 
@@ -45,4 +46,8 @@ export class JobOpportunity extends BaseEntity {
     @ManyToOne(() => Company, company => company.jobOpportunities)
     @JoinColumn({ name: "company_id" })
     company: Company;
+
+    @ManyToOne(() => JobCategory)
+    @JoinColumn({ name: "category_id" })
+    jobCategory: JobCategory;
 }

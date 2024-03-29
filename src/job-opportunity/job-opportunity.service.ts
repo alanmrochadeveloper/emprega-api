@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyService } from 'src/company/company.service';
+import { JobCategoryService } from 'src/job-category/job-category.service';
 import { PersonService } from 'src/person/person.service';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
@@ -15,12 +16,15 @@ export class JobOpportunityService {
         private readonly jobOpportunityRepository: Repository<JobOpportunity>,
         private readonly companyService: CompanyService,
         private readonly userService: UserService,
-        private readonly personService: PersonService
+        private readonly personService: PersonService,
+        private readonly jobCategoryService: JobCategoryService
     ) { }
     async create(payload: Partial<CreateJobOpportunityDto>) {
-        const { companyId } = payload;
+        const { companyId, jobCategoryId } = payload;
         const company = await this.companyService.findOneById(companyId);
         if (!company) throw new NotFoundException(`Empresa não encontrada!`)
+        const jobCategory = await this.jobCategoryService.findOneById(jobCategoryId);
+        if (!jobCategory) throw new NotFoundException(`Categoria de trabalho não encontrada!`)
         const jobOpportunity = this.jobOpportunityRepository.create(payload)
         jobOpportunity.company = company;
         return await this.jobOpportunityRepository.save(jobOpportunity);

@@ -8,6 +8,7 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
     @Post()
     async create(@Body() body: CreateUserDTO) {
+        // TODO: ver se realmente vamos usar esse endpoint e como, e se realmente vamos usar roles no MVP
         const password = await bcrypt.hash('1234', 12);
         const { role_id, ...data } = body;
         // return this.userService.create({

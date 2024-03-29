@@ -18,7 +18,8 @@ const options = {
         salaryRange: { min: faker.helpers.rangeToNumber([40000, 50000]), max: faker.helpers.rangeToNumber([50000, 150000]) },
         salaryToBeAgreed: faker.datatype.boolean(),
         model: faker.helpers.arrayElement(["on_site", "remote", "hybrid"]),
-        isActive: faker.datatype.boolean()
+        isActive: faker.datatype.boolean(),
+        jobCategoryId: 'idaqui'
     }
 };
 

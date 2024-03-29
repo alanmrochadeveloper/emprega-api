@@ -12,5 +12,6 @@ export class CreateJobOpportunityDto {
     salaryToBeAgreed: boolean;
     model: ModelEnum;
     isActive: boolean;
+    jobCategoryId: string;
 }
 

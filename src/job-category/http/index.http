@@ -1,0 +1,4 @@
+### get job categories with filter
+
+GET http://localhost:8000/api/job-category?page=1&limit=10&name=Engineering
+
