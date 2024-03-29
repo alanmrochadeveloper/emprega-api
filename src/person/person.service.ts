@@ -29,5 +29,14 @@ export class PersonService {
     async findOneById(id: string) {
         return await this.personRepository.findOneBy({ id })
     }
+
+    async findOneByIdWithRelations(id: string, relations: string[]) {
+        return await this.personRepository.findOne({
+            where: { id },
+            relations
+        })
+    }
+
+
 }
 

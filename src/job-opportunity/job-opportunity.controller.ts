@@ -16,7 +16,7 @@ export class JobOpportunityController {
     @Get()
     async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
         limit = limit > 100 ? 100 : limit;
-        return this.jobOpportunityService.findAll({
+        return await this.jobOpportunityService.findAll({
             page,
             limit,
             route: 'http://localhost:8000/api/job-opportunity',

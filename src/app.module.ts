@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { AuthorizedDocumentsModule } from './authorized-documents/authorized-documents.module';
 import { CategoryModule } from './category/category.module';
 import { CompanyModule } from './company/company.module';
 import { JobOpportunityModule } from './job-opportunity/job-opportunity.module';
 import { PersonModule } from './person/person.module';
 import { UserModule } from './user/user.module';
-import { AuthorizedDocumentsModule } from './authorized-documents/authorized-documents.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
