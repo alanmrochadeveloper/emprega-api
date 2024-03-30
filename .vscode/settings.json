@@ -5,8 +5,18 @@
             "server": "localhost",
             "port": 15432,
             "driver": "PostgreSQL",
-            "name": "postgres docker",
+            "name": "docker postgres",
             "group": "docker",
+            "database": "99Emprega",
+            "username": "root"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 15432,
+            "driver": "PostgreSQL",
+            "name": "postgres docker outer port",
+            "group": "outer docker",
             "database": "99Emprega",
             "username": "root"
         }

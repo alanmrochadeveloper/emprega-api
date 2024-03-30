@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Docker Compose: All",
+            "type": "docker-compose",
+            "request": "launch",
+            "service": "backend",
+            "dockerComposeFile": "docker-compose.yml",
+            "preLaunchTask": "docker:compose-up",
+            "postDebugTask": "docker:compose-down",
+            "args": [
+                "-f",
+                "docker-compose.yml"
+            ],
+            "dockerRun": {
+                "env": [
+                    "NODE_ENV=development",
+                    "DEBUG=1"
+                ],
+                "ports": [
+                    "8000:3001"
+                ],
+                "volumes": [
+                    ".:/app"
+                ]
+            }
+        }
+    ]
+}

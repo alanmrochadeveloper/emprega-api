@@ -4,8 +4,8 @@ POST http://localhost:8000/api/auth/signin HTTP/1.1
 Content-Type: application/json
 
 {
-    "email":"Mercia_Costa90@bol.com.br",
-    "password":"M@riana2023"    
+    "email":"alanmrochadeveloper@gmail.com",
+    "password":"@AdminTeste123"    
 }
 
 ###
@@ -19,18 +19,37 @@ Content-Type: application/json
 
 ### register a user applicant
 
+# POST http://localhost:/api/auth/register HTTP/1.1
 POST http://localhost:8000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name":"Terem",
-    "last_name":"Pereira Silva",
-    "email": "terem1998@gmail.com",
+    "first_name":"Alan",
+    "last_name":"Miguel Pereira da Silva Rocha",
+    "email": "alanmrochadeveloper@gmail.com",
+    "password": "@AdminTeste123",
+    "password_confirm": "@AdminTeste123",
+    "address": "Rua Amparo",
+    "cpf": "357.968.728-00",
+    "phone_number": "19983868614",
+    "category":"Candidato",
+    "personType": "Física"
+}
+
+### register a user applicant trying to be admin
+
+POST http://localhost:8000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "first_name":"Algum",
+    "last_name":"Maluco por ai",
+    "email": "maluco@admin.com",
     "password": "@Teste123",
     "password_confirm": "@Teste123",
-    "address": "Rua alguma",
-    "cpf": "37381449005",
-    "phone_number": "12345678900",
+    "address": "Rua Teste",
+    "cpf": "127.209.720-02",
+    "phone_number": "1993242333",
     "category":"Candidato",
     "personType": "Física"
 

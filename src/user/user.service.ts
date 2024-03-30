@@ -48,7 +48,6 @@ export class UserService {
         const { first_name: firstName, last_name: lastName, address, cpf: cpfDTO, phone_number: phoneNumber, email, password, category: categoryValue, cnpj: cnpjDTO, personType, companyNamePerson, personCNPJ: personCNPJDTO, tradingNamePerson, avatarPath: avatar, avatarFile, companyName, logo, logoFile, stateInscr: stateInscrDTO, tradingName, stateInscrPerson: stateInscrPersonDTO } = registerDto
         //TODO: use this way to normalize, till I figure out how to fix transform itself in DTOs
         const { personCNPJ, stateInscrPerson, stateInscr, cpf, cnpj } = normalizeRegisterDocuments({ personCNPJ: personCNPJDTO, stateInscrPerson: stateInscrPersonDTO, stateInscr: stateInscrDTO, cpf: cpfDTO, cnpj: cnpjDTO });
-        console.log("teste if every document is normalized = ", personCNPJ, stateInscrPerson, stateInscr, cpf, cnpj)
 
         this.validateDocuments(cpf, personCNPJ, stateInscrDTO)
 
@@ -68,7 +67,7 @@ export class UserService {
 
             const user = this.userRepository.create({ email, password, avatar, avatarFile })
 
-            if (this.isAdmin(cpf)) {
+            if (await this.isAdmin(cpf)) {
                 return await this.makesAdmin(user, address, firstName, lastName, cpf, phoneNumber);
             }
 
@@ -215,7 +214,9 @@ export class UserService {
 
     async isAdmin(doc: string) {
         const adminDoc = await this.adminDocumentsService.findOneByValue(doc)
-        if (adminDoc.value === doc) return true;
+        console.log({ adminDoc })
+        if (adminDoc == null) return false
+        if (adminDoc?.value === doc) return true;
         return false;
     }
 

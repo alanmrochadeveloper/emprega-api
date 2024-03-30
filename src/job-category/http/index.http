@@ -1,4 +1,18 @@
+
+### get job categories with no filter
+
+GET http://localhost:8000/api/job-category?page=1&limit=10
+
 ### get job categories with filter
 
 GET http://localhost:8000/api/job-category?page=1&limit=10&name=Engineering
+
+### create a category
+
+POST http://localhost:8000/api/job-category
+Content-Type: application/json
+
+{
+    "name": "Suporte Técnico"
+}
 

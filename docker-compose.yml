@@ -9,6 +9,9 @@ services:
       - .:/app
     depends_on:
       - db
+    environment:
+      - NODE_ENV=development
+      - DEBUG=1
 
   db:
     image: postgres:12

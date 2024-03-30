@@ -45,12 +45,15 @@ export class JobCategoryService {
     }
 
     async create(createJobCategoryDto: CreateJobCategoryDto, user: User) {
-        const userWithPerson = await this.userService.findOneByIdWithRelations(user.id, ['person'])
+        if (!user) {
+            throw new UnauthorizedException('Faça login para cadastrar uma categoria de trabalho!')
+        }
+        const userWithPerson = await this.userService.findOneByIdWithRelations(user?.id, ['person'])
         if (!userWithPerson.person) {
             throw new BadRequestException('Pessoa não encontrada!')
         }
 
-        const personWithCategory = await this.personService.findOneByIdWithRelations(userWithPerson.person.id, ['jobCategory'])
+        const personWithCategory = await this.personService.findOneByIdWithRelations(userWithPerson.person?.id, ['category'])
         if (personWithCategory.category.value !== CategoryEnum.Admin) {
             throw new UnauthorizedException('Usuário não autorizado para cadastrar categoria de trabalho!')
         }
