@@ -19,7 +19,7 @@ const options = {
         salaryToBeAgreed: faker.datatype.boolean(),
         model: faker.helpers.arrayElement(["on_site", "remote", "hybrid"]),
         isActive: faker.datatype.boolean(),
-        jobCategoryId: 'idaqui'
+        jobCategoryId: '5ced1374-b4ee-47ce-8c30-ec02de83666e'
     }
 };
 

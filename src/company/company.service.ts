@@ -51,7 +51,7 @@ export class CompanyService {
     }
 
     async createForPerson(companyData: CreateCompanyDto, user: User) {
-        const userWithPerson = await this.userService.findOneByIdWithRelations(user.id, ['person']);
+        const userWithPerson = await this.userService.findOneByIdWithRelations(user?.id, ['person']);
         if (!userWithPerson) throw new NotFoundException('usuário não existe!')
 
         const companyDataNormalized = this.normalizeCompanyData(companyData);

@@ -86,11 +86,15 @@ export class UserService {
 
             if (personCNPJ && !validateCNPJ(personCNPJ)) throw new BadRequestException(`CNPJ da empresa não é válido!`)
 
-            const isExisttingLegalPerson = await this.personService.findOneByCNPJ(personCNPJ)
-            if (isExisttingLegalPerson) throw new BadRequestException(`Esse cnpj já se encontra em uso!`)
+            const isExistingLegalPerson = await this.personService.findOneByCNPJ(personCNPJ)
+            if (isExistingLegalPerson) throw new BadRequestException(`Esse cnpj já se encontra em uso!`)
 
             const isExistingCompany = await this.companyService.findByCNPJ(cnpj)
-            const isExistingAuthorizedDocument = await this.authorizedDocumentsService.findOneByCompanyIdAndDocument(isExistingCompany.id, cpf) || await this.authorizedDocumentsService.findOneByCompanyIdAndDocument(isExistingCompany.id, personCNPJ)
+            const isExistingAuthorizedDocument = isExistingCompany ?
+                await this.authorizedDocumentsService.findOneByCompanyIdAndDocument(isExistingCompany.id, cpf)
+                ||
+                await this.authorizedDocumentsService.findOneByCompanyIdAndDocument(isExistingCompany?.id, personCNPJ)
+                : undefined;
             if (isExistingCompany && !isExistingAuthorizedDocument) {
                 this.authorizedDocumentsService.create({ company: isExistingCompany, document: cpf ?? personCNPJ, status: AuthorizedDocumentsStatus.PENDING })
                 throw new BadRequestException(`Essa empresa já está cadastrada, peça para administrador da mesma autorizar seu cpf ou cnpj  para cadastrar em nome da empresa!`)
@@ -214,7 +218,6 @@ export class UserService {
 
     async isAdmin(doc: string) {
         const adminDoc = await this.adminDocumentsService.findOneByValue(doc)
-        console.log({ adminDoc })
         if (adminDoc == null) return false
         if (adminDoc?.value === doc) return true;
         return false;
