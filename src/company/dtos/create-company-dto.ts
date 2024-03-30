@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateCompanyDto {
     @IsString()
@@ -16,6 +16,10 @@ export class CreateCompanyDto {
     @IsString()
     @IsNotEmpty()
     stateInscr: string;
+
+    @IsInt()
+    @IsNotEmpty()
+    employeesNumber: number;
 
     @IsString()
     @IsNotEmpty()

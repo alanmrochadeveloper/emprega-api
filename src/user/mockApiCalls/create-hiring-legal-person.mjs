@@ -26,7 +26,8 @@ const options = {
         // personType: faker.helpers.arrayElement(['Jurídica', 'Física']),
         tradingNamePerson: faker.company.name(),
         companyNamePerson: faker.company.name(),
-        stateInscrPerson: generateFakeValidInscricaoEstadual()
+        stateInscrPerson: generateFakeValidInscricaoEstadual(),
+        employeesNumber: faker.number.int({ min: 10, max: 10000 })
     }
 };
 

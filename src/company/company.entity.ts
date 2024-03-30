@@ -19,6 +19,9 @@ export class Company extends BaseEntity {
     @Column({ name: "cnpj", length: 14, unique: true })
     cnpj: string;
 
+    @Column({ name: "employees_number", type: "int" })
+    employeesNumber: number;
+
     @OneToMany(() => JobOpportunity, jobOpportunity => jobOpportunity.company)
     jobOpportunities: JobOpportunity[];
 

@@ -23,7 +23,8 @@ const options = {
         companyName: faker.company.name(),
         stateInscr: generateFakeValidInscricaoEstadual(),
         cnpj: generateFakeValidCnpjV2(),
-        logo: faker.image.avatarGitHub()
+        logo: faker.image.avatarGitHub(),
+        employeesNumber: faker.number.int({ min: 10, max: 10000 })
     }
 };
 

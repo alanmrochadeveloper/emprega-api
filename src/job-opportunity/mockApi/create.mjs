@@ -19,7 +19,8 @@ const options = {
         salaryToBeAgreed: faker.datatype.boolean(),
         model: faker.helpers.arrayElement(["on_site", "remote", "hybrid"]),
         isActive: faker.datatype.boolean(),
-        jobCategoryId: '5ced1374-b4ee-47ce-8c30-ec02de83666e'
+        jobCategoryId: '5ced1374-b4ee-47ce-8c30-ec02de83666e',
+        employeesNumber: faker.number.int({ min: 10, max: 10000 })
     }
 };
 

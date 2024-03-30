@@ -16,7 +16,7 @@ const options = {
         cpf: generateFakeValidCpfV2(),
         phone_number: faker.phone.number().replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3"),
         category: 'Candidato',
-        personType: 'Física'
+        personType: 'Física',
     }
 };
 
