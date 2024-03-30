@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdminDocumentsModule } from 'src/admin-documents/admin-documents.module';
 import { AuthorizedDocumentsModule } from 'src/authorized-documents/authorized-documents.module';
 import { CategoryModule } from 'src/category/category.module';
 import { Company } from 'src/company/company.entity';
@@ -14,7 +15,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Person, Company]), CategoryModule, PersonModule, forwardRef(() => CompanyModule), AuthorizedDocumentsModule,
+  imports: [TypeOrmModule.forFeature([User, Person, Company]), CategoryModule, PersonModule, forwardRef(() => CompanyModule), AuthorizedDocumentsModule, forwardRef(() => AdminDocumentsModule),
   JwtModule.register({ secret: 'secret', signOptions: { expiresIn: "1d" } })],
   providers: [UserService, PersonService, CompanyService],
   controllers: [UserController],

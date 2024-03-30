@@ -10,6 +10,7 @@ import { JobOpportunityModule } from './job-opportunity/job-opportunity.module';
 import { PersonModule } from './person/person.module';
 import { UserModule } from './user/user.module';
 import { JobCategoryModule } from './job-category/job-category.module';
+import { AdminDocumentsModule } from './admin-documents/admin-documents.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -22,7 +23,7 @@ import { JobCategoryModule } from './job-category/job-category.module';
     autoLoadEntities: true,
     synchronize: true
   }),
-    PersonModule, CategoryModule, UserModule, AuthModule, JobOpportunityModule, CompanyModule, UserModule, AuthorizedDocumentsModule, JobCategoryModule],
+    PersonModule, CategoryModule, UserModule, AuthModule, JobOpportunityModule, CompanyModule, UserModule, AuthorizedDocumentsModule, JobCategoryModule, AdminDocumentsModule],
   controllers: [AppController],
   providers: [AppService],
 })

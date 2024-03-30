@@ -1,6 +1,8 @@
 import { Column, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export class BaseEntity {
+    // TODO: figure out how to implement catching user who created, updated and deleted the entity
+    // TODO: maybe using a decorator or constructor
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

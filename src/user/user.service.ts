@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcryptjs";
+import { AdminDocumentsService } from 'src/admin-documents/admin-documents.service';
 import { RegisterDTO } from 'src/auth/dto/register.dto';
 import { AuthorizedDocumentsStatus } from 'src/authorized-documents/authorized-documents.entity';
 import { AuthorizedDocumentsService } from 'src/authorized-documents/authorized-documents.service';
@@ -12,9 +13,7 @@ import { EnumPersonType } from 'src/person/person.entity';
 import { PersonService } from 'src/person/person.service';
 import { validateCNPJ } from 'src/utils/cnpjValidation';
 import { validateCPF } from 'src/utils/cpfValidation';
-import { normalizeCnpj } from 'src/utils/normalizeCnpj';
-import { normalizeCpf } from 'src/utils/normalizeCpf';
-import { normalizeStateInscr } from 'src/utils/normalizeStateInscr';
+import { normalizeRegisterDocuments } from 'src/utils/normalizeRegisterDocuments';
 import { validateStateInscr } from 'src/utils/stateInscrValidation';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -26,7 +25,8 @@ export class UserService {
         private readonly personService: PersonService,
         private readonly categoryService: CategoryService,
         private readonly authorizedDocumentsService: AuthorizedDocumentsService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        @Inject(forwardRef(() => AdminDocumentsService)) private readonly adminDocumentsService: AdminDocumentsService
     ) {
 
     }
@@ -47,17 +47,12 @@ export class UserService {
     async create(registerDto: RegisterDTO) {
         const { first_name: firstName, last_name: lastName, address, cpf: cpfDTO, phone_number: phoneNumber, email, password, category: categoryValue, cnpj: cnpjDTO, personType, companyNamePerson, personCNPJ: personCNPJDTO, tradingNamePerson, avatarPath: avatar, avatarFile, companyName, logo, logoFile, stateInscr: stateInscrDTO, tradingName, stateInscrPerson: stateInscrPersonDTO } = registerDto
         //TODO: use this way to normalize, till I figure out how to fix transform itself in DTOs
-        const personCNPJ = normalizeCnpj(personCNPJDTO)
-        const stateInscrPerson = normalizeStateInscr(stateInscrPersonDTO)
-        const stateInscr = normalizeStateInscr(stateInscrDTO)
-        const cpf = normalizeCpf(cpfDTO)
-        const cnpj = normalizeCnpj(cnpjDTO)
-        try {
-            if (!cpf && !personCNPJ) throw new BadRequestException(`O documento cpf ou cnpj não foram fornecidos`)
-            if (cpf && !validateCPF((cpf))) throw new BadRequestException(`CPF não é válido!`)
-            if (stateInscrDTO && !validateStateInscr(stateInscrDTO)) throw new BadRequestException(`Inscrição Estadual não é válida!`)
-            if (personCNPJ && !validateCNPJ(personCNPJ)) throw new BadRequestException(`CNPJ não é válido!`)
+        const { personCNPJ, stateInscrPerson, stateInscr, cpf, cnpj } = normalizeRegisterDocuments({ personCNPJ: personCNPJDTO, stateInscrPerson: stateInscrPersonDTO, stateInscr: stateInscrDTO, cpf: cpfDTO, cnpj: cnpjDTO });
+        console.log("teste if every document is normalized = ", personCNPJ, stateInscrPerson, stateInscr, cpf, cnpj)
 
+        this.validateDocuments(cpf, personCNPJ, stateInscrDTO)
+
+        try {
             const isInscribedState = await this.companyService.findOneByStateInscr(stateInscr)
             if (isInscribedState) throw new BadRequestException(`Esta inscrição estadual já está em uso!`)
 
@@ -72,6 +67,10 @@ export class UserService {
             if (isExistingAccount) throw new BadRequestException(`Esse email já existe, tente outro email!`);
 
             const user = this.userRepository.create({ email, password, avatar, avatarFile })
+
+            if (this.isAdmin(cpf)) {
+                return await this.makesAdmin(user, address, firstName, lastName, cpf, phoneNumber);
+            }
 
             const category = await this.categoryService.getByValue(categoryValue);
             if (category.value === "Anunciante" && cnpj == null && personCNPJ == null) throw new BadRequestException(`O anunciante deve ter uma empresa para anunciar as vagas!`)
@@ -205,5 +204,32 @@ export class UserService {
             nextPage: total / limit > page ? `${route}?page=${page + 1}&limit=${limit}` : null,
             prevPage: page > 1 ? `${route}?page=${page - 1}&limit=${limit}` : null,
         };
+    }
+
+    validateDocuments(cpf: string, cnpj: string, stateInscr: string) {
+        if (!cpf && !cnpj) throw new BadRequestException(`O documento cpf ou cnpj não foram fornecidos`)
+        if (cpf && !validateCPF((cpf))) throw new BadRequestException(`CPF não é válido!`)
+        if (stateInscr && !validateStateInscr(stateInscr)) throw new BadRequestException(`Inscrição Estadual não é válida!`)
+        if (cnpj && !validateCNPJ(cnpj)) throw new BadRequestException(`CNPJ não é válido!`)
+    }
+
+    async isAdmin(doc: string) {
+        const adminDoc = await this.adminDocumentsService.findOneByValue(doc)
+        if (adminDoc.value === doc) return true;
+        return false;
+    }
+
+    async makesAdmin(user: User, address: string, firstName: string, lastName: string, cpf: string, phoneNumber: string) {
+        const adminCategory = await this.categoryService.getByValue(CategoryEnum.Admin)
+        const person = await this.personService.save({ address, firstName, lastName, cpf, phoneNumber, category: adminCategory, type: EnumPersonType.Fisica })
+        user.person = person;
+        await this.userRepository.save(user);
+        return {
+            message: "Usuário Administrador criado com sucesso!",
+            email: user.email,
+            firstName: person.firstName,
+            lastName: person.lastName,
+            cpf: person.cpf,
+        }
     }
 }
