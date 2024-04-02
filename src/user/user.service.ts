@@ -259,12 +259,17 @@ export class UserService {
   }
 
   async signIn(email: string, password: string) {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOne({
+      where: { email },
+      relations: ["person.category"],
+    });
     if (!user) throw new NotFoundException("usuário não encontrado");
     if (!(await bcrypt.compare(password, user.password)))
       throw new BadRequestException("Credenciais Inválidas!");
-    const jwt = this.jwtService.signAsync({ id: user.id });
-    return jwt;
+    const jwt = this.jwtService.signAsync({
+      id: user.id,
+    });
+    return { jwt, user };
   }
 
   async getUserByCookie(cookie) {
