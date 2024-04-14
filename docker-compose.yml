@@ -11,7 +11,20 @@ services:
       - db
     environment:
       - NODE_ENV=development
-      - DEBUG=1
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=emprega-99-dev.cbuaoiimmoy2.sa-east-1.rds.amazonaws.com
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=99Emprega777
+      - POSTGRES_DB=emprega99
+      - TYPEORM_AUTO_LOAD_ENTITIES=true
+      - TYPEORM_SYNCHRONIZE=true
+      # - TYPEORM_CONNECTION=postgres
+      # - TYPEORM_ENTITIES=src/infra/typeorm/entities/*.ts
+      # - TYPEORM_MIGRATIONS=src/infra/typeorm/migrations/*.ts
+      # - TYPEORM_MIGRATIONS_DIR=src/infra/typeorm/migrations
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
   db:
     image: postgres:12

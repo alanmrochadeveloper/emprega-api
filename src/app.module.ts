@@ -14,16 +14,6 @@ import { JobOpportunityModule } from "./job-opportunity/job-opportunity.module";
 import { PersonModule } from "./person/person.module";
 import { UserModule } from "./user/user.module";
 
-/*TypeOrmModule.forRoot ({
-type: "postgres",
-host: "db",
-port: 5432,
-username: "root",
-password: "root",
-database: "99Emprega",
-autoLoadEntities: true,
-synchronize: true
-}) */
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,8 +26,8 @@ synchronize: true
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      autoLoadEntities: true,
-      synchronize: true,
+      autoLoadEntities: process.env.TYPEORM_AUTO_LOAD_ENTITIES === "true",
+      synchronize: process.env.TYPEORM_SYNCHRONIZE === "true",
       ssl: { rejectUnauthorized: false },
     }),
     PersonModule,
