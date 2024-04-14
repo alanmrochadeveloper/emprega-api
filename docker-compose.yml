@@ -17,7 +17,7 @@ services:
     image: postgres:12
     restart: always
     environment:
-      - POSTGRES_DB=99Emprega
+      - POSTGRES_DB=emprega99
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
     volumes:

@@ -19,6 +19,46 @@
             "group": "outer docker",
             "database": "99Emprega",
             "username": "root"
+        },
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "previewLimit": 50,
+            "server": "ep-flat-hat-20566197-pooler.us-east-1.aws.neon.tech",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "postgres vercel",
+            "group": "online",
+            "database": "verceldb",
+            "username": "default"
+        },
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": false
+                }
+            },
+            "previewLimit": 50,
+            "server": "emprega-99.cbuaoiimmoy2.sa-east-1.rds.amazonaws.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "aws rds postgres",
+            "group": "online",
+            "database": "Emprega99",
+            "username": "postgres"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 15432,
+            "driver": "PostgreSQL",
+            "name": "emprega99",
+            "group": "docker",
+            "database": "emprega99",
+            "username": "root"
         }
     ]
 }

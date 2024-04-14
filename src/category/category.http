@@ -1,6 +1,13 @@
+# @apiPort = {{$processEnv API_PORT}}
+@apiPort = 3001
+@apiUrl = localhost
+@apiProtocol = http
+@host = {{apiProtocol}}://{{apiUrl}}:{{apiPort}}
+@apiPath = /api/category
 ### POST new Category Candidato
+#
 
-POST http://localhost:8000/api/category HTTP/1.1
+POST {{host}}{{apiPath}} HTTP/1.1
 Content-Type: application/json
 
 {
@@ -9,7 +16,7 @@ Content-Type: application/json
 
 ### POST new Category Anunciante
 
-POST http://localhost:8000/api/category HTTP/1.1
+POST {{host}}{{apiPath}} HTTP/1.1
 Content-Type: application/json
 
 {
@@ -18,7 +25,7 @@ Content-Type: application/json
 
 ### POST new Category Admin
 
-POST http://localhost:8000/api/category HTTP/1.1
+POST {{host}}{{apiPath}} HTTP/1.1
 Content-Type: application/json
 
 {
