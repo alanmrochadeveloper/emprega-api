@@ -8,8 +8,8 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const httpsOptions: HttpsOptions = {
-    key: readFileSync("path/to/key.pem"),
-    cert: readFileSync("path/to/cert.pem"),
+    key: readFileSync("../private.key"),
+    cert: readFileSync("../certificate.crt"),
   };
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
