@@ -14,7 +14,7 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     })
   );
-  app.enableCors({ allowedHeaders: "*", credentials: true });
+  app.enableCors({ origin: "*", allowedHeaders: "*", credentials: true });
   app.use(cookieParser());
   await app.listen(process.env.API_PORT || 3001);
 }
