@@ -21,6 +21,7 @@ import { EnumPersonType } from "src/person/person.entity";
 import { PersonService } from "src/person/person.service";
 import { validateCNPJ } from "src/utils/cnpjValidation";
 import { validateCPF } from "src/utils/cpfValidation";
+import { dayjsPtBr } from "src/utils/dayjs-ptbr";
 import { normalizeRegisterDocuments } from "src/utils/normalizeRegisterDocuments";
 import { validateStateInscr } from "src/utils/stateInscrValidation";
 import { Repository } from "typeorm";
@@ -53,7 +54,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { id }, relations });
   }
 
-  async emailValidation(email: string) {
+  async validateEmail(email: string) {
     try {
       const user = await this.findOneByEmail(email);
 
@@ -61,6 +62,10 @@ export class UserService {
 
       user.confirmationToken = confirmationToken;
 
+      // TODO: remove this later, this for testing purposes
+      console.log(dayjsPtBr(), dayjsPtBr().add(100, "minute").toDate());
+
+      user.tokenExpiresDate = dayjsPtBr().add(100, "minute").toDate();
       await this.userRepository.save(user);
 
       await this.emailService.sendConfirmationEmail(

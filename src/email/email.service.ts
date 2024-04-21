@@ -6,12 +6,13 @@ export class EmailService {
   constructor(private mailerService: MailerService) {}
 
   async sendConfirmationEmail(email: string, confirmationToken: string) {
+    const clientUrl = process.env.CLIENT_URL;
     await this.mailerService.sendMail({
       to: email,
       subject: "Email Confirmation",
       template: "./confirmation",
       context: {
-        confirmationUrl: `http://your-frontend-url/confirm-email?token=${confirmationToken}`,
+        confirmationUrl: `${clientUrl}/confirm-email?token=${confirmationToken}`,
       },
     });
   }

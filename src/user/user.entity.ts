@@ -15,11 +15,14 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column({ type: "boolean", default: false })
+  @Column({ type: "boolean", default: false, name: "email_confirmed" })
   emailConfirmed: boolean;
 
-  @Column({ type: "varchar", nullable: true })
+  @Column({ type: "varchar", nullable: true, name: "confirmation_token" })
   confirmationToken: string;
+
+  @Column({ type: "timestamptz", nullable: true, name: "token_expires_date" })
+  tokenExpiresDate: Date;
 
   @Column({ type: "varchar", nullable: true })
   avatar: string;
