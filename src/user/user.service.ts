@@ -54,13 +54,18 @@ export class UserService {
     return await this.userRepository.findOne({ where: { id }, relations });
   }
 
-  async validateEmail(email: string) {
+  async sendConfirmationEmail(email: string) {
     try {
       const user = await this.findOneByEmail(email);
 
-      const confirmationToken = randomBytes(32).toString("hex");
+      if (!user) throw new NotFoundException(`Esse email não está cadastrado`);
+      if (user.emailConfirmed)
+        throw new BadRequestException(`Esse email já foi confirmado!`);
 
-      user.confirmationToken = confirmationToken;
+      if (user.tokenExpiresDate < dayjsPtBr().toDate())
+        throw new BadRequestException(`Esse token expirou!`);
+
+      user.confirmationToken = randomBytes(32).toString("hex");
 
       // TODO: remove this later, this for testing purposes
       console.log(dayjsPtBr(), dayjsPtBr().add(100, "minute").toDate());
@@ -70,7 +75,7 @@ export class UserService {
 
       await this.emailService.sendConfirmationEmail(
         user.email,
-        confirmationToken
+        user.confirmationToken
       );
 
       return {
@@ -82,6 +87,31 @@ export class UserService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async confirmEmail(confirmationToken: string): Promise<void> {
+    const user = await this.userRepository.findOneBy({
+      confirmationToken,
+    });
+
+    if (!user) {
+      throw new NotFoundException("Token inválido.");
+    }
+
+    if (user.emailConfirmed) {
+      throw new BadRequestException("Email já confirmado.");
+    }
+
+    if (user.tokenExpiresDate < dayjsPtBr().toDate()) {
+      throw new BadRequestException("Token expirado.");
+    }
+
+    user.emailConfirmed = true;
+    user.confirmationToken = null;
+    user.tokenExpiresDate = null;
+
+    await this.userRepository.save(user);
+  }
+
   async create(registerDto: RegisterDTO) {
     const {
       first_name: firstName,
@@ -182,9 +212,11 @@ export class UserService {
         });
         user.person = person;
         await this.userRepository.save(user);
+        const { message } = await this.sendConfirmationEmail(email);
         return {
           email: user.email,
           nome: person.firstName + " " + person.lastName,
+          message,
         };
       }
 

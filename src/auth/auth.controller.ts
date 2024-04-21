@@ -73,4 +73,23 @@ export class AuthController {
       message: "success",
     };
   }
+
+  @Post("confirm-email")
+  async confirmEmail(@Body("token") token: string) {
+    await this.userService.confirmEmail(token);
+    return {
+      message: "Email confirmado com sucesso!",
+    };
+  }
+
+  @Post("send-confirmation-email")
+  async sendConfirmationEmailToUser(@Body("email") email: string) {
+    try {
+      return await this.userService.sendConfirmationEmail(email);
+    } catch (error) {
+      throw new BadRequestException(
+        "Erro ao enviar email de confirmação: " + error.message
+      );
+    }
+  }
 }
