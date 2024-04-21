@@ -8,6 +8,7 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import { AdminDocumentsService } from "src/admin-documents/admin-documents.service";
 import { RegisterDTO } from "src/auth/dto/register.dto";
 import { AuthorizedDocumentsStatus } from "src/authorized-documents/authorized-documents.entity";
@@ -15,6 +16,7 @@ import { AuthorizedDocumentsService } from "src/authorized-documents/authorized-
 import { CategoryEnum } from "src/category/category.entity";
 import { CategoryService } from "src/category/category.service";
 import { CompanyService } from "src/company/company.service";
+import { EmailService } from "src/email/email.service";
 import { EnumPersonType } from "src/person/person.entity";
 import { PersonService } from "src/person/person.service";
 import { validateCNPJ } from "src/utils/cnpjValidation";
@@ -35,7 +37,8 @@ export class UserService {
     private readonly authorizedDocumentsService: AuthorizedDocumentsService,
     private readonly jwtService: JwtService,
     @Inject(forwardRef(() => AdminDocumentsService))
-    private readonly adminDocumentsService: AdminDocumentsService
+    private readonly adminDocumentsService: AdminDocumentsService,
+    private readonly emailService: EmailService
   ) {}
 
   async findOneByEmail(email: string) {
@@ -50,6 +53,30 @@ export class UserService {
     return await this.userRepository.findOne({ where: { id }, relations });
   }
 
+  async emailValidation(email: string) {
+    try {
+      const user = await this.findOneByEmail(email);
+
+      const confirmationToken = randomBytes(32).toString("hex");
+
+      user.confirmationToken = confirmationToken;
+
+      await this.userRepository.save(user);
+
+      await this.emailService.sendConfirmationEmail(
+        user.email,
+        confirmationToken
+      );
+
+      return {
+        message:
+          "Um email de confirmação foi enviado para o seu endereço de email.",
+      };
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(error.message);
+    }
+  }
   async create(registerDto: RegisterDTO) {
     const {
       first_name: firstName,
