@@ -13,6 +13,7 @@ import { JobCategoryModule } from "./job-category/job-category.module";
 import { JobOpportunityModule } from "./job-opportunity/job-opportunity.module";
 import { PersonModule } from "./person/person.module";
 import { UserModule } from "./user/user.module";
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UserModule } from "./user/user.module";
     JobCategoryModule,
     AdminDocumentsModule,
     AdminEmailModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
