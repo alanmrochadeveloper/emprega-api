@@ -9,7 +9,7 @@ export class EmailService {
     const clientUrl = process.env.CLIENT_URL;
     await this.mailerService.sendMail({
       to: email,
-      subject: "Email Confirmation",
+      subject: "Confirmação do email na 99Emprega",
       template: "./confirmation",
       context: {
         confirmationUrl: `${clientUrl}/confirm-email?token=${confirmationToken}`,
