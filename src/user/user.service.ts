@@ -304,6 +304,8 @@ export class UserService {
 
       await this.userRepository.save(user);
 
+      const { message } = await this.sendConfirmationEmail(email);
+
       await this.personService.save(legalPerson);
 
       return {
@@ -314,6 +316,7 @@ export class UserService {
         lastName: legalPerson.lastName,
         cpf: legalPerson.cpf,
         cnpj: legalPerson.cnpj,
+        message,
       };
     } catch (e) {
       console.error(e.message);
@@ -433,8 +436,9 @@ export class UserService {
     });
     user.person = person;
     await this.userRepository.save(user);
+    const { message } = await this.sendConfirmationEmail(user.email);
     return {
-      message: "Usuário Administrador criado com sucesso!",
+      message: `Usuário Administrador criado com sucesso! ${message}`,
       email: user.email,
       firstName: person.firstName,
       lastName: person.lastName,
