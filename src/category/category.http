@@ -1,7 +1,7 @@
 # @apiPort = {{$processEnv API_PORT}}
 @apiPort = 3001
 @apiUrl = localhost
-@apiProtocol = http
+@apiProtocol = https
 @host = {{apiProtocol}}://{{apiUrl}}:{{apiPort}}
 @apiPath = /api/category
 ### POST new Category Candidato

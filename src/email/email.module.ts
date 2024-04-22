@@ -11,7 +11,7 @@ import { EmailService } from "./email.service";
         from: `"${process.env.EMAIL_USER}" <no-reply@${process.env.EMAIL_DOMAIN}>`,
       },
       template: {
-        dir: __dirname + "/templates",
+        dir: __dirname + "templates",
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,

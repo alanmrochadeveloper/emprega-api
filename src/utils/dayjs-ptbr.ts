@@ -1,2 +1,4 @@
-import dayjs from "dayjs/locale/pt-br";
-export const dayjsPtBr = dayjs;
+import * as dayjs from "dayjs";
+require("dayjs/locale/pt-br");
+
+export { dayjs as dayjsPtBr };
