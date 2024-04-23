@@ -77,9 +77,6 @@ export class AuthController {
   @Post("confirm-email")
   async confirmEmail(@Body("token") token: string) {
     await this.userService.confirmEmail(token);
-    return {
-      message: "Email confirmado com sucesso!",
-    };
   }
 
   @Post("send-confirmation-email")

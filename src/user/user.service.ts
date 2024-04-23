@@ -93,7 +93,7 @@ export class UserService {
     }
   }
 
-  async confirmEmail(confirmationToken: string): Promise<void> {
+  async confirmEmail(confirmationToken: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOneBy({
       confirmationToken,
     });
@@ -115,6 +115,10 @@ export class UserService {
     user.tokenExpiresDate = null;
 
     await this.userRepository.save(user);
+
+    return {
+      message: "Email confirmado com sucesso!",
+    };
   }
 
   async create(registerDto: RegisterDTO) {
