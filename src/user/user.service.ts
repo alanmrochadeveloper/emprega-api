@@ -99,7 +99,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException("Token inválido.");
+      throw new BadRequestException("Token inválido.");
     }
 
     if (user.emailConfirmed) {
