@@ -340,6 +340,10 @@ export class UserService {
       relations: ["person.category"],
     });
     if (!user) throw new NotFoundException("usuário não encontrado");
+    if (!user.emailConfirmed)
+      throw new BadRequestException(
+        `Email não confirmado! Por favor cheque sua caixa de entrada e confirme o email!`
+      );
     if (!(await bcrypt.compare(password, user.password)))
       throw new BadRequestException("Credenciais Inválidas!");
     const jwt = this.jwtService.signAsync({
