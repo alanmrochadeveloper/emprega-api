@@ -59,6 +59,22 @@
             "group": "docker",
             "database": "emprega99",
             "username": "root"
+        },
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": false
+                }
+            },
+            "previewLimit": 50,
+            "server": "emprega-99-dev.cbuaoiimmoy2.sa-east-1.rds.amazonaws.com",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "aws rds dev",
+            "group": "aws",
+            "database": "emprega99",
+            "username": "postgres"
         }
     ]
 }

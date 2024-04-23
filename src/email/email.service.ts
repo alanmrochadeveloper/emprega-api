@@ -7,13 +7,17 @@ export class EmailService {
 
   async sendConfirmationEmail(email: string, confirmationToken: string) {
     const clientUrl = process.env.CLIENT_URL;
-    await this.mailerService.sendMail({
+    const value = await this.mailerService.sendMail({
       to: email,
       subject: "Confirmação do email na 99Emprega",
-      template: "./confirmation",
-      context: {
-        confirmationUrl: `${clientUrl}/confirm-email?token=${confirmationToken}`,
-      },
+      from: process.env.EMAIL_USER,
+      html: `<h1>Confirmação do email na 99Emprega click aqui <a href="${clientUrl}/confirm-email?token=${confirmationToken}">Confirmar</a></h1>`,
+      // text: "Confirmação do email na 99Emprega",
+      // template: "./confirmation",
+      // context: {
+      //   confirmationUrl: `${clientUrl}/confirm-email?token=${confirmationToken}`,
+      // },
     });
+    return value;
   }
 }
