@@ -11,7 +11,7 @@ export class EmailService {
       to: email,
       subject: "Confirmação do email na 99Emprega",
       from: process.env.EMAIL_USER,
-      html: `<h1>Confirmação do email na 99Emprega click aqui <a href="${clientUrl}/confirm-email?token=${confirmationToken}">Confirmar</a></h1>`,
+      html: `<h1>Confirmação do email na 99Emprega click aqui <a href="${clientUrl}/auth/confirm-email?token=${confirmationToken}">Confirmar</a></h1>`,
       // text: "Confirmação do email na 99Emprega",
       // template: "./confirmation",
       // context: {
