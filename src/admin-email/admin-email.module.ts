@@ -8,5 +8,6 @@ import { AdminEmailService } from "./admin-email.service";
   imports: [TypeOrmModule.forFeature([AdminEmail])],
   providers: [AdminEmailService],
   controllers: [AdminEmailController],
+  exports: [AdminEmailService],
 })
 export class AdminEmailModule {}

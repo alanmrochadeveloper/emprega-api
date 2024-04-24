@@ -9,7 +9,7 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
-import { AdminDocumentsService } from "src/admin-documents/admin-documents.service";
+import { AdminEmailService } from "src/admin-email/admin-email.service";
 import { RegisterDTO } from "src/auth/dto/register.dto";
 import { AuthorizedDocumentsStatus } from "src/authorized-documents/authorized-documents.entity";
 import { AuthorizedDocumentsService } from "src/authorized-documents/authorized-documents.service";
@@ -37,8 +37,7 @@ export class UserService {
     private readonly categoryService: CategoryService,
     private readonly authorizedDocumentsService: AuthorizedDocumentsService,
     private readonly jwtService: JwtService,
-    @Inject(forwardRef(() => AdminDocumentsService))
-    private readonly adminDocumentsService: AdminDocumentsService,
+    private readonly adminEmailService: AdminEmailService,
     private readonly emailService: EmailService
   ) {}
 
@@ -189,7 +188,7 @@ export class UserService {
         avatarFile,
       });
 
-      if (await this.isAdmin(cpf)) {
+      if (await this.isAdmin(email)) {
         return await this.makesAdmin(
           user,
           address,
@@ -420,11 +419,8 @@ export class UserService {
       throw new BadRequestException(`CNPJ não é válido!`);
   }
 
-  async isAdmin(doc: string) {
-    const adminDoc = await this.adminDocumentsService.findOneByValue(doc);
-    if (adminDoc == null) return false;
-    if (adminDoc?.value === doc) return true;
-    return false;
+  async isAdmin(email: string) {
+    return await this.adminEmailService.isAdmin(email);
   }
 
   async makesAdmin(

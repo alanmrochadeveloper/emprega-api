@@ -1,7 +1,7 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AdminDocumentsModule } from "src/admin-documents/admin-documents.module";
+import { AdminEmailModule } from "src/admin-email/admin-email.module";
 import { AuthorizedDocumentsModule } from "src/authorized-documents/authorized-documents.module";
 import { CategoryModule } from "src/category/category.module";
 import { Company } from "src/company/company.entity";
@@ -22,7 +22,7 @@ import { UserService } from "./user.service";
     PersonModule,
     forwardRef(() => CompanyModule),
     AuthorizedDocumentsModule,
-    forwardRef(() => AdminDocumentsModule),
+    AdminEmailModule,
     EmailModule,
     JwtModule.register({ secret: "secret", signOptions: { expiresIn: "1d" } }),
   ],
