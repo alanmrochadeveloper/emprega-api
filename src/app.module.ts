@@ -9,11 +9,11 @@ import { AuthModule } from "./auth/auth.module";
 import { AuthorizedDocumentsModule } from "./authorized-documents/authorized-documents.module";
 import { CategoryModule } from "./category/category.module";
 import { CompanyModule } from "./company/company.module";
+import { EmailModule } from "./email/email.module";
 import { JobCategoryModule } from "./job-category/job-category.module";
 import { JobOpportunityModule } from "./job-opportunity/job-opportunity.module";
 import { PersonModule } from "./person/person.module";
 import { UserModule } from "./user/user.module";
-import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -21,14 +21,19 @@ import { EmailModule } from './email/email.module';
       envFilePath: [".env.development", ".env.production"],
     }),
     TypeOrmModule.forRoot({
-      type: "postgres",
-      host: process.env.POSTGRES_HOST,
-      port: Number(process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
+      type: process.env.TYPEORM_CONNECTION as "postgres",
+      host: process.env.TYPEORM_HOST,
+      port: Number(process.env.TYPEORM_PORT),
+      username: process.env.TYPEORM_USERNAME,
+      password: process.env.TYPEORM_PASSWORD,
+      database: process.env.TYPEORM_DATABASE,
       autoLoadEntities: process.env.TYPEORM_AUTO_LOAD_ENTITIES === "true",
       synchronize: process.env.TYPEORM_SYNCHRONIZE === "true",
+      logging: process.env.TYPEORM_LOGGING === "true",
+      migrations: [process.env.TYPEORM_MIGRATIONS],
+      migrationsTableName: process.env.TYPEORM_MIGRATIONS_TABLE_NAME,
+      migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN === "true",
+      entities: [process.env.TYPEORM_ENTITIES],
       ssl: { rejectUnauthorized: false },
     }),
     PersonModule,

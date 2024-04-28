@@ -30,7 +30,13 @@
     "pm2:pull": "pm2 pull api && npm install && npm run build && pm2 start app.json --watch",
     "pm2:start": "pm2 start app.json",
     "pm2:stop": "pm2 stop app.json",
-    "pm2:delete": "pm2 delete app.json"
+    "pm2:delete": "pm2 delete app.json",
+    "migration:create": "cross-var ts-node node_modules/typeorm/cli.js migration:create src/database/migrations/$npm_config_name",
+    "migration:generate": "ts-node node_modules/typeorm/cli.js migration:generate src/database/migrations/ -d src/utils/datasource.ts",
+    "migrate": "ts-node node_modules/typeorm/cli.js migration:run -d src/utils/datasource.ts",
+    "migration:down": "ts-node node_modules/typeorm/cli.js migration:revert -d src/utils/datasource.ts",
+    "migrations:delete:all": "ts-node node_modules/typeorm/cli.js schema:drop -d src/utils/datasource.ts",
+    "typeorm:cache:clear": "ts-node node_modules/typeorm/cli.js cache:clear -d src/utils/datasource.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.11.2",
@@ -50,6 +56,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
+    "cross-var": "^1.1.0",
+    "dotenv": "^16.4.5",
     "handlebars": "^4.7.8",
     "nodemailer": "^6.9.13",
     "passport-jwt": "^4.0.1",
