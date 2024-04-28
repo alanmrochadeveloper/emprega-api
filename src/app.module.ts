@@ -34,6 +34,7 @@ import { UserModule } from "./user/user.module";
       migrationsTableName: process.env.TYPEORM_MIGRATIONS_TABLE_NAME,
       migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN === "true",
       entities: [process.env.TYPEORM_ENTITIES],
+      // ssl: false,
       ssl: { rejectUnauthorized: false },
     }),
     PersonModule,

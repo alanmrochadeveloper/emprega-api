@@ -75,6 +75,17 @@
             "group": "aws",
             "database": "emprega99",
             "username": "postgres"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 15432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "localhost docker postgres",
+            "group": "docker",
+            "database": "emprega99",
+            "username": "root"
         }
     ]
 }

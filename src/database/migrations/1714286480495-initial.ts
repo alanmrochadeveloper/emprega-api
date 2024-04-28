@@ -33,7 +33,13 @@ export class Initial1714286480495 implements MigrationInterface {
       `CREATE TABLE "category" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "is_active" boolean NOT NULL DEFAULT true, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "value" "public"."category_value_enum" NOT NULL, CONSTRAINT "UQ_4f0f3ecd39f846b48c0f7596f00" UNIQUE ("value"), CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
-      `INSERT INTO "public"."category_value_enum" (label) VALUES (${CategoryEnum.Admin}), (${CategoryEnum.Anunciante}), (${CategoryEnum.Anunciante})`
+      `INSERT INTO "public"."category" ("value") VALUES ('${CategoryEnum.Admin}')`
+    );
+    await queryRunner.query(
+      `INSERT INTO "public"."category" ("value") VALUES ('${CategoryEnum.Anunciante}')`
+    );
+    await queryRunner.query(
+      `INSERT INTO "public"."category" ("value") VALUES ('${CategoryEnum.Candidato}')`
     );
     await queryRunner.query(
       `CREATE TABLE "person" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "is_active" boolean NOT NULL DEFAULT true, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "first_name" character varying(100), "last_name" character varying(250), "address" character varying(250) NOT NULL, "birth_date" date, "cpf" character varying(11), "cnpj" character varying(14), "trading_name" character varying(150), "company_name" character varying(150), "state_inscr" character varying(12), "rg" character varying(11), "type" character varying NOT NULL, "phonenumber" character varying(50) NOT NULL, "phonenumber2" character varying(50), "resume_file_path" character varying(255), "resume_file_blob" bytea, "category_id" uuid, CONSTRAINT "UQ_264b7cad2330569e0ef5b4c39c4" UNIQUE ("cpf"), CONSTRAINT "UQ_c441b3fe81699a20d6ba507b1a8" UNIQUE ("cnpj"), CONSTRAINT "UQ_0b7866418431609fa1bafadbfc3" UNIQUE ("state_inscr"), CONSTRAINT "UQ_690554d08986f72266f0f0ff79d" UNIQUE ("rg"), CONSTRAINT "PK_5fdaf670315c4b7e70cce85daa3" PRIMARY KEY ("id"))`

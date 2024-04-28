@@ -1,3 +1,4 @@
+select * from "user"
 
 -- INSERT INTO admin_email (email) VALUES ('alanmrochadeveloper@gmail.com');
 

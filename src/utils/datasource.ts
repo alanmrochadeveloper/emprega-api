@@ -4,10 +4,15 @@ import { DataSource } from "typeorm";
 
 config({
   path: [
+    resolve(__dirname, "../../.env.local"),
     resolve(__dirname, "../../.env.development"),
     resolve(__dirname, "../../.env.production"),
-    resolve(__dirname, "../../.env.local"),
   ],
+});
+
+console.log({
+  host: process.env.TYPEORM_HOST,
+  port: parseInt(process.env.TYPEORM_PORT || "5432"),
 });
 
 export const connectionSource = new DataSource({
