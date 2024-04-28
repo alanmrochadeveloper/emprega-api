@@ -7,4 +7,6 @@
 
 -- select * from "person"
 
+-- select * from migrations_history
 -- delete from "person"
+

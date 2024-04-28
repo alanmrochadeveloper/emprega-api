@@ -10,21 +10,6 @@ config({
   ],
 });
 
-console.log({
-  type: process.env.TYPEORM_CONNECTION,
-  host: process.env.TYPEORM_HOST,
-  port: process.env.TYPEORM_PORT,
-  username: process.env.TYPEORM_USERNAME,
-  password: process.env.TYPEORM_PASSWORD,
-  database: process.env.TYPEORM_DATABASE,
-  synchronize: process.env.TYPEORM_SYNCHRONIZE,
-  migrations: process.env.TYPEORM_MIGRATIONS,
-  migrationsTableName: process.env.TYPEORM_MIGRATIONS_TABLE_NAME,
-  migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN,
-  entities: process.env.TYPEORM_ENTITIES,
-  ssl: process.env.TYPEORM_SSL_REJECT_UNAUTHORIZED,
-});
-
 export const connectionSource = new DataSource({
   type: process.env.TYPEORM_CONNECTION as "postgres",
   host: process.env.TYPEORM_HOST,
@@ -33,7 +18,7 @@ export const connectionSource = new DataSource({
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
   // synchronize: process.env.TYPEORM_SYNCHRONIZE === "true",
-  synchronize: true,
+  synchronize: false,
   migrations: [__dirname + "/../database/migrations/*.{ts,js}"],
   migrationsTableName: process.env.TYPEORM_MIGRATIONS_TABLE_NAME,
   migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN === "true",

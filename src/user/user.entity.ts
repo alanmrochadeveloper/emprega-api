@@ -1,5 +1,5 @@
 import { Exclude } from "class-transformer";
-import { BaseEntity } from "src/base/entity.base";
+import { BaseEntity } from "src/base/baseEnt";
 import { Person } from "src/person/person.entity";
 import {
   AfterInsert,
