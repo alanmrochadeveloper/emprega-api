@@ -12,9 +12,9 @@ import { CompanyModule } from "./company/company.module";
 import { EmailModule } from "./email/email.module";
 import { JobCategoryModule } from "./job-category/job-category.module";
 import { JobOpportunityModule } from "./job-opportunity/job-opportunity.module";
+import { MajorJobCategoryModule } from "./major-job-category/major-job-category.module";
 import { PersonModule } from "./person/person.module";
 import { UserModule } from "./user/user.module";
-import { MajorJobCategoryModule } from './major-job-category/major-job-category.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { MajorJobCategoryModule } from './major-job-category/major-job-category.
     TypeOrmModule.forRoot({
       type: process.env.TYPEORM_CONNECTION as "postgres",
       host: process.env.TYPEORM_HOST,
-      port: Number(process.env.TYPEORM_PORT),
+      port: Number(process.env.TYPEORM_PORT) || 5432,
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
