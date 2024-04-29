@@ -34,6 +34,7 @@
     "migration:create": "cross-var ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:create src/database/migrations/$npm_config_name",
     "migration:generate": "cross-var ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:generate src/database/migrations/$npm_config_name -d src/utils/datasource.ts",
     "migrate": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:run -d src/utils/datasource.ts",
+    "migrate:dev": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:run -d src/utils/datasource_dev.ts",
     "migration:down": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:revert -d src/utils/datasource.ts",
     "migration:delete:all": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js schema:drop -d src/utils/datasource.ts",
     "typeorm:cache:clear": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js cache:clear -d src/utils/datasource.ts"
