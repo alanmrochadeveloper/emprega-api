@@ -61,14 +61,6 @@ export class UserService {
       if (user.emailConfirmed)
         throw new BadRequestException(`Esse email já foi confirmado!`);
 
-      // TODO: remove this later, this for testing purposes
-      console.log(
-        dayjsPtBr(),
-        dayjsPtBr().add(100, "minute").toDate(),
-        user,
-        user.tokenExpiresDate < dayjsPtBr().toDate()
-      );
-
       if (user.tokenExpiresDate && user.tokenExpiresDate < dayjsPtBr().toDate())
         throw new BadRequestException(`Esse token expirou!`);
 

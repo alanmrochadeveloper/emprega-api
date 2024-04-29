@@ -7,6 +7,8 @@ export class EmailService {
 
   async sendConfirmationEmail(email: string, confirmationToken: string) {
     const clientUrl = process.env.CLIENT_URL;
+    console.log(clientUrl);
+    console.log(process.env.NODE_ENV);
     const value = await this.mailerService.sendMail({
       to: email,
       subject: "Confirmação do email na 99Emprega",

@@ -1,5 +1,6 @@
-
-
+select * from "user"
+-- select * from admin_email
+-- select * from migrations_history
 -- INSERT INTO admin_email (email) VALUES ('alanmrochadeveloper@gmail.com');
 
 -- SELECT * FROM admin_email

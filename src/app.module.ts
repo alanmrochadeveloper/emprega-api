@@ -28,7 +28,7 @@ import { UserModule } from "./user/user.module";
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
-      autoLoadEntities: process.env.TYPEORM_AUTO_LOAD_ENTITIES === "true",
+      autoLoadEntities: true,
       synchronize: process.env.TYPEORM_SYNCHRONIZE === "true",
       logging: process.env.TYPEORM_LOGGING === "true",
       migrations: [process.env.TYPEORM_MIGRATIONS],
