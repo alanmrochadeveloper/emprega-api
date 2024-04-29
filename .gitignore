@@ -1,5 +1,5 @@
 node_modules
 dist
 .vercel
-aws rds dev.session.sql
+"aws rds dev.session".sql
 
