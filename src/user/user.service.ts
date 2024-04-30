@@ -61,8 +61,16 @@ export class UserService {
       if (user.emailConfirmed)
         throw new BadRequestException(`Esse email já foi confirmado!`);
 
-      if (user.tokenExpiresDate && user.tokenExpiresDate < dayjsPtBr().toDate())
-        throw new BadRequestException(`Esse token expirou!`);
+      let message =
+        "Um email de confirmação foi enviado para o seu endereço de email.";
+
+      if (
+        user.tokenExpiresDate &&
+        user.tokenExpiresDate < dayjsPtBr().toDate()
+      ) {
+        message =
+          "Esse token expirou! Um novo email de confirmação foi enviado para o seu endereço de email.";
+      }
 
       user.confirmationToken = randomBytes(32).toString("hex");
 
@@ -75,8 +83,7 @@ export class UserService {
       );
 
       return {
-        message:
-          "Um email de confirmação foi enviado para o seu endereço de email.",
+        message,
       };
     } catch (error) {
       console.error(error);
