@@ -344,16 +344,23 @@ export class UserService {
       );
     if (!(await bcrypt.compare(password, user.password)))
       throw new BadRequestException("Credenciais Inválidas!");
-    const jwt = this.jwtService.signAsync({
+    const jwt = await this.jwtService.signAsync({
       id: user.id,
     });
     return { jwt, user };
   }
 
-  async getUserByCookie(cookie) {
+  async getUserByCookie(cookie: string) {
     const { id } = await this.jwtService.verifyAsync(cookie);
 
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        person: {
+          category: true,
+        },
+      },
+    });
 
     return user;
   }

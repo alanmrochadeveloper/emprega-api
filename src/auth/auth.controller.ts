@@ -62,7 +62,13 @@ export class AuthController {
   @Get("user")
   async getUserByCookie(@Req() request: Request) {
     const cookie = request.cookies["jwt"];
-    return await this.userService.getUserByCookie(cookie);
+    const user = await this.userService.getUserByCookie(cookie);
+    const { email, person } = user;
+    return {
+      email,
+      category: person.category.value,
+      name: person.firstName + " " + person.lastName,
+    };
   }
 
   @UseGuards(AuthGuard)
