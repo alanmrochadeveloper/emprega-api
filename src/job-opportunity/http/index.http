@@ -1,6 +1,14 @@
 ### Create Job Opportunity
+#
+@apiPort = {{$processEnv API_PORT}}
+@apiPort = 3001
+@apiUrl = localhost
+@apiProtocol = https
+@host = {{apiProtocol}}://{{apiUrl}}:{{apiPort}}
+@apiPath = /api/job-opportunity
+@fullUrl = {{host}}{{apiPath}}
 
-POST http://localhost:8000/api/job-opportunity HTTP/1.1
+POST {{fullUrl}} HTTP/1.1
 Content-Type: application/json
 
 {
@@ -19,7 +27,7 @@ Content-Type: application/json
 
 ### Apply to Job Opportunity
 
-POST http://localhost:8000/api/job-opportunity/75ddc64e-3001-4f96-8d7a-886c39062143/apply HTTP/1.1
+POST {{fullUrl}}/75ddc64e-3001-4f96-8d7a-886c39062143/apply HTTP/1.1
 Content-Type: application/json
 
 {
@@ -29,6 +37,6 @@ Content-Type: application/json
 
 ### Get Job Opportunities with Pagination
 
-GET http://localhost:8000/api/job-opportunity?page=1&limit=10 HTTP/1.1
+GET {{fullUrl}}?page=1&limit=10 HTTP/1.1
 Content-Type: application/json
 
