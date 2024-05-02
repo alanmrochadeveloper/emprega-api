@@ -8,5 +8,6 @@ import { MajorJobCategoryService } from "./major-job-category.service";
   imports: [TypeOrmModule.forFeature([MajorJobCategory])],
   controllers: [MajorJobCategoryController],
   providers: [MajorJobCategoryService],
+  exports: [MajorJobCategoryService],
 })
 export class MajorJobCategoryModule {}

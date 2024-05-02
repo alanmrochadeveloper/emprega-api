@@ -7,13 +7,13 @@ export class JobCategory extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   imagePath: string;
 
-  @Column({ type: "bytea" })
+  @Column({ type: "bytea", nullable: true })
   imageBuffer: Buffer;
 
   @ManyToOne(() => MajorJobCategory)

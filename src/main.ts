@@ -12,6 +12,7 @@ async function bootstrap() {
     cert: readFileSync("./certificate.crt"),
   };
   const app = await NestFactory.create(AppModule, { httpsOptions });
+
   app.setGlobalPrefix("api");
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,12 +21,20 @@ async function bootstrap() {
     })
   );
   app.enableCors({
-    origin: "*",
-    allowedHeaders: "*",
+    origin: [
+      // process.env.FRONTEND_URL,
+      "http://localhost:3000",
+      "https://localhost:3001",
+      "https://main.d3unqwilcm1tv7.amplifyapp.com",
+      "https://development.d3unqwilcm1tv7.amplifyapp.com",
+      "https://emprega-regional-client.vercel.app/",
+      process.env.CLIENT_URL,
+    ],
     credentials: true,
-    methods: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
   });
   app.use(cookieParser());
+
   await app.listen(process.env.API_PORT || 3001);
 }
 bootstrap();

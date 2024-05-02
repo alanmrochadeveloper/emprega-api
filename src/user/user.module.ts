@@ -11,6 +11,7 @@ import { EmailModule } from "src/email/email.module";
 import { Person } from "src/person/person.entity";
 import { PersonModule } from "src/person/person.module";
 import { PersonService } from "src/person/person.service";
+import { expiresIn } from "src/utils/globals";
 import { UserController } from "./user.controller";
 import { User } from "./user.entity";
 import { UserService } from "./user.service";
@@ -24,7 +25,7 @@ import { UserService } from "./user.service";
     AuthorizedDocumentsModule,
     AdminEmailModule,
     EmailModule,
-    JwtModule.register({ secret: "secret", signOptions: { expiresIn: "1d" } }),
+    JwtModule.register({ secret: "secret", signOptions: { expiresIn } }),
   ],
   providers: [UserService, PersonService, CompanyService],
   controllers: [UserController],

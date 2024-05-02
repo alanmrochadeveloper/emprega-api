@@ -1,18 +1,36 @@
 
 ### get job categories with no filter
 
-GET http://localhost:8000/api/job-category?page=1&limit=10
+GET https://localhost:3001/api/job-category?page=1&limit=10
 
 ### get job categories with filter
 
-GET http://localhost:8000/api/job-category?page=1&limit=10&name=Engineering
+GET https://localhost:3001/api/job-category?page=1&limit=10&name=Engineering
 
 ### create a category
 
-POST http://localhost:8000/api/job-category
+POST https://localhost:3001/api/job-category
 Content-Type: application/json
 
 {
-    "name": "Suporte Técnico"
+    "name": "Engenheiro de Software",
+    "description": "Engenheiro de Software para o sistema em geral",
+    "imagePath": "https://localhost:3001/images/job-categories/support.png",
+    "majorJobCategoryId": "7ed93d7f-4d8b-4f93-b233-2c2cb7d5b593"
 }
 
+### 31fd6f0c-1dd4-4b41-9fb9-c35580860dd9
+
+POST https://localhost:3001/api/job-category
+Content-Type: application/json
+
+{
+    "name": "Gerente Financeiro",
+    "description": "Gerente Financeiro para o sistema em geral",
+    "imagePath": "https://localhost:3001/images/job-categories/support.png",
+    "majorJobCategoryId": "31fd6f0c-1dd4-4b41-9fb9-c35580860dd9"
+}
+
+###
+
+GET https://localhost:3001/api/major-job-category

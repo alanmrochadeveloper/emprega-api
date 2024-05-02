@@ -22,6 +22,7 @@ import { PersonService } from "src/person/person.service";
 import { validateCNPJ } from "src/utils/cnpjValidation";
 import { validateCPF } from "src/utils/cpfValidation";
 import { dayjsPtBr } from "src/utils/dayjs-ptbr";
+import { expiresIn } from "src/utils/globals";
 import { normalizeRegisterDocuments } from "src/utils/normalizeRegisterDocuments";
 import { validateStateInscr } from "src/utils/stateInscrValidation";
 import { Repository } from "typeorm";
@@ -344,9 +345,12 @@ export class UserService {
       );
     if (!(await bcrypt.compare(password, user.password)))
       throw new BadRequestException("Credenciais Inválidas!");
-    const jwt = await this.jwtService.signAsync({
-      id: user.id,
-    });
+    const jwt = await this.jwtService.signAsync(
+      {
+        id: user.id,
+      },
+      { expiresIn }
+    );
     return { jwt, user };
   }
 

@@ -5,6 +5,7 @@ import { CompanyModule } from "src/company/company.module";
 import { JobCategoryModule } from "src/job-category/job-category.module";
 import { PersonModule } from "src/person/person.module";
 import { UserModule } from "src/user/user.module";
+import { expiresIn } from "src/utils/globals";
 import { JobOpportunityController } from "./job-opportunity.controller";
 import { JobOpportunityService } from "./job-opportunity.service";
 import { JobOpportunity } from "./jobOpportunity.entity";
@@ -18,7 +19,7 @@ import { JobOpportunity } from "./jobOpportunity.entity";
     JobCategoryModule,
     JwtModule.register({
       secret: "secret", // Use an environment variable for production
-      signOptions: { expiresIn: "1d" },
+      signOptions: { expiresIn },
     }),
   ],
   providers: [JobOpportunityService],
