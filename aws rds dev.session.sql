@@ -1,5 +1,6 @@
 -- select * from "job_category"
-select * from "major_job_category"
+-- select * from "job_opportunity"
+-- select * from "major_job_category"
 -- delete from "job_category"
 -- select * from admin_email
 -- select * from migrations_history

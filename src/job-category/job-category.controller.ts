@@ -16,7 +16,6 @@ export class JobCategoryController {
     @Query("limit") limit: number = 10,
     @Query("name") name: string
   ) {
-    console.log({ page, limit, name });
     return this.jobCategoryService.findAll(page, limit, name);
   }
   @Post()

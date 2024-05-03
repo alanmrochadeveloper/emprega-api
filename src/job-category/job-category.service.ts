@@ -51,7 +51,6 @@ export class JobCategoryService {
   }
 
   async create(createJobCategoryDto: CreateJobCategoryDto, user: User) {
-    console.log({ createJobCategoryDto });
     if (!user) {
       throw new UnauthorizedException(
         "Faça login para cadastrar uma categoria de trabalho!"

@@ -33,6 +33,7 @@ export class JobOpportunityService {
       throw new NotFoundException(`Categoria de trabalho não encontrada!`);
     const jobOpportunity = this.jobOpportunityRepository.create(payload);
     jobOpportunity.company = company;
+    jobOpportunity.jobCategory = jobCategory;
     return await this.jobOpportunityRepository.save(jobOpportunity);
   }
 
