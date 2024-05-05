@@ -10,7 +10,6 @@ import { PersonService } from "src/person/person.service";
 import { UserService } from "src/user/user.service";
 import { Like, Repository } from "typeorm";
 import { CreateJobOpportunityDto } from "./dto/create";
-import { ApplyJobOpportunityDto } from "./job-opportunity.controller";
 import { JobOpportunity } from "./jobOpportunity.entity";
 
 @Injectable()
@@ -38,10 +37,14 @@ export class JobOpportunityService {
   }
 
   async findAll({ page, limit, route, majorJobCategoryId, city, term }) {
-    const whereCondition: any = {
-      location: city,
-      description: Like(`%${term}%`),
-    };
+    const whereCondition: any = {};
+    if (city) {
+      whereCondition.location = city;
+    }
+
+    if (term) {
+      whereCondition.description = Like(`%${term}%`);
+    }
 
     if (majorJobCategoryId) {
       whereCondition.jobCategory = {
@@ -77,9 +80,7 @@ export class JobOpportunityService {
       prevPage: page > 1 ? `${route}?page=${page - 1}&limit=${limit}` : null,
     };
   }
-  async apply(id: string, payload: ApplyJobOpportunityDto) {
-    const { userId } = payload;
-
+  async apply(id: string, userId: string) {
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
     ]);
@@ -89,9 +90,12 @@ export class JobOpportunityService {
       user.person?.id,
       ["category"]
     );
+
     if (!person) throw new NotFoundException(`Pessoa não encontrada!`);
     if (person.category.value !== "Candidato")
       throw new BadRequestException(`Usuário não é um candidato!`);
+
+    console.log({ user, person });
 
     const jobOpportunity = await this.findOneByIdWithRelations(id, [
       "applicants",
@@ -113,13 +117,22 @@ export class JobOpportunityService {
     return await this.jobOpportunityRepository.save(jobOpportunity);
   }
 
-  async findOneById(id: string) {
-    return await this.jobOpportunityRepository.findOneBy({ id });
-  }
   async findOneByIdWithRelations(id: string, relations: string[]) {
     return await this.jobOpportunityRepository.findOne({
       where: { id },
       relations,
     });
+  }
+
+  async findById(id: string) {
+    const jobOpportunity = await this.jobOpportunityRepository.findOneBy({
+      id,
+    });
+    if (!jobOpportunity) {
+      throw new NotFoundException(
+        `Oportunidade de trabalho com ID ${id} não encontrada.`
+      );
+    }
+    return jobOpportunity;
   }
 }

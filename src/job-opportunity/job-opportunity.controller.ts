@@ -5,16 +5,22 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
+import { Request } from "express";
 import { AuthGuard } from "src/auth/auth.guard";
+import { UserService } from "src/user/user.service";
 import { CreateJobOpportunityDto } from "./dto/create";
 import { ApplyJobOpportunityDto } from "./dtos/apply-job-opportunity.dto";
 import { JobOpportunityService } from "./job-opportunity.service";
 
 @Controller("job-opportunity")
 export class JobOpportunityController {
-  constructor(private readonly jobOpportunityService: JobOpportunityService) {}
+  constructor(
+    private readonly jobOpportunityService: JobOpportunityService,
+    private readonly userService: UserService
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard)
@@ -42,12 +48,24 @@ export class JobOpportunityController {
     });
   }
 
+  @Get(":id")
+  async findById(@Param("id") id: string, @Query("full") full: boolean) {
+    if (full) {
+      return await this.jobOpportunityService.findOneByIdWithRelations(id, [
+        "jobCategory",
+        "jobCategory.majorJobCategory",
+      ]);
+    }
+    return await this.jobOpportunityService.findById(id);
+  }
+
   @Post(":id/apply")
-  async apply(
-    @Param("id") id: string,
-    @Body() applyJobOpportunityDto: ApplyJobOpportunityDto
-  ) {
-    return await this.jobOpportunityService.apply(id, applyJobOpportunityDto);
+  @UseGuards(AuthGuard)
+  async apply(@Param("id") id: string, @Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    const { id: userId } = user;
+    return await this.jobOpportunityService.apply(id, userId);
   }
 }
 export { ApplyJobOpportunityDto };
