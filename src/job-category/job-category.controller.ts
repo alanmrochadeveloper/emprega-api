@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+} from "@nestjs/common";
 import { Request } from "express";
 import { UserService } from "src/user/user.service";
 import { CreateJobCategoryDto } from "./dtos/create-job-category-dtos";
@@ -10,6 +19,7 @@ export class JobCategoryController {
     private readonly jobCategoryService: JobCategoryService,
     private readonly userService: UserService
   ) {}
+
   @Get()
   findAll(
     @Query("page") page: number = 1,
@@ -18,6 +28,7 @@ export class JobCategoryController {
   ) {
     return this.jobCategoryService.findAll(page, limit, name);
   }
+
   @Post()
   async create(
     @Body() createJobCategoryDto: CreateJobCategoryDto,
@@ -26,5 +37,15 @@ export class JobCategoryController {
     const cookie = request.cookies["jwt"];
     const user = await this.userService.getUserByCookie(cookie);
     return this.jobCategoryService.create(createJobCategoryDto, user);
+  }
+
+  @Delete(":id")
+  async delete(@Param("id") id: string) {
+    return this.jobCategoryService.delete(id);
+  }
+
+  @Delete("soft/:id")
+  async softDelete(@Param("id") id: string) {
+    return this.jobCategoryService.softDelete(id);
   }
 }

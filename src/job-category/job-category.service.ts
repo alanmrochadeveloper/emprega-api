@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -81,5 +82,21 @@ export class JobCategoryService {
     );
     newJobCategory.majorJobCategory = majorJobCategory;
     return await this.jobCategoryRepository.save(newJobCategory);
+  }
+
+  async delete(id: string) {
+    const jobCategory = await this.jobCategoryRepository.findOneBy({ id });
+    if (!jobCategory) {
+      throw new NotFoundException("Categoria de trabalho não encontrada!");
+    }
+    await this.jobCategoryRepository.remove(jobCategory);
+  }
+
+  async softDelete(id: string) {
+    const jobCategory = await this.jobCategoryRepository.findOneBy({ id });
+    if (!jobCategory) {
+      throw new NotFoundException("Categoria de trabalho não encontrada!");
+    }
+    await this.jobCategoryRepository.softDelete(id);
   }
 }
