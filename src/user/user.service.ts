@@ -54,8 +54,6 @@ export class UserService {
 
     if (!userWithPerson) throw new NotFoundException("Usuário não encontrado!");
 
-    // console.log({ person: userWithPerson.person, user: userWithPerson });
-
     const personWithCategory =
       await this.personService.findOneByIdWithRelations(
         userWithPerson.person.id,
@@ -72,7 +70,18 @@ export class UserService {
         "Usuário não autorizado para visualizar usuários!"
       );
 
-    return await this.userRepository.findOneBy({ id });
+    const userToRetun = await this.findOneByIdWithRelations(id, [
+      "person",
+      "person.category",
+    ]);
+
+    return {
+      email: userToRetun.email,
+      name: userToRetun.person.firstName + " " + userToRetun.person.lastName,
+      isActive: userToRetun.isActive,
+      emailConfirmed: userToRetun.emailConfirmed,
+      category: userToRetun.person.category.value,
+    };
   }
 
   async findOneByIdWithRelations(id: string, relations: string[]) {
