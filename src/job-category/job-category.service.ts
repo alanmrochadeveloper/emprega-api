@@ -91,19 +91,69 @@ export class JobCategoryService {
     return await this.jobCategoryRepository.save(newJobCategory);
   }
 
-  async delete(id: string) {
+  async delete(id: string, user: User) {
+    if (!user) {
+      throw new UnauthorizedException(
+        "Faça login para deletar uma categoria de trabalho!"
+      );
+    }
+
     const jobCategory = await this.jobCategoryRepository.findOneBy({ id });
     if (!jobCategory) {
       throw new NotFoundException("Categoria de trabalho não encontrada!");
     }
+
+    const userWithPerson = await this.userService.findOneByIdWithRelations(
+      user.id,
+      ["person"]
+    );
+    const personWithCategory =
+      await this.personService.findOneByIdWithRelations(
+        userWithPerson.person.id,
+        ["category"]
+      );
+    if (
+      !userWithPerson.person ||
+      personWithCategory.category.value !== CategoryEnum.Admin
+    ) {
+      throw new UnauthorizedException(
+        "Usuário não autorizado para deletar categoria de trabalho!"
+      );
+    }
+
     await this.jobCategoryRepository.remove(jobCategory);
   }
 
-  async softDelete(id: string) {
+  async softDelete(id: string, user: User) {
+    if (!user) {
+      throw new UnauthorizedException(
+        "Faça login para deletar uma categoria de trabalho!"
+      );
+    }
+
     const jobCategory = await this.jobCategoryRepository.findOneBy({ id });
     if (!jobCategory) {
       throw new NotFoundException("Categoria de trabalho não encontrada!");
     }
+
+    const userWithPerson = await this.userService.findOneByIdWithRelations(
+      user.id,
+      ["person"]
+    );
+    const personWithCategory =
+      await this.personService.findOneByIdWithRelations(
+        userWithPerson.person.id,
+        ["category"]
+      );
+    if (
+      !userWithPerson.person ||
+      personWithCategory.category.value !== CategoryEnum.Admin
+    ) {
+      throw new UnauthorizedException(
+        "Usuário não autorizado para deletar categoria de trabalho!"
+      );
+    }
+
     await this.jobCategoryRepository.softDelete(id);
   }
 

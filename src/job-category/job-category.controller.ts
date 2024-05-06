@@ -76,12 +76,16 @@ export class JobCategoryController {
   }
 
   @Delete(":id")
-  async delete(@Param("id") id: string) {
-    return this.jobCategoryService.delete(id);
+  async delete(@Param("id") id: string, @Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    return this.jobCategoryService.delete(id, user);
   }
 
   @Delete("soft/:id")
-  async softDelete(@Param("id") id: string) {
-    return this.jobCategoryService.softDelete(id);
+  async softDelete(@Param("id") id: string, @Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    return this.jobCategoryService.softDelete(id, user);
   }
 }
