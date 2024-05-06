@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
   forwardRef,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -369,8 +370,33 @@ export class UserService {
     return user;
   }
 
-  async findAll(options: { page: number; limit: number; route: string }) {
-    const { page, limit, route } = options;
+  async findAll(options: {
+    page: number;
+    limit: number;
+    route: string;
+    user: User;
+  }) {
+    const { page, limit, route, user } = options;
+
+    const userWithPerson = await this.findOneByIdWithRelations(user.id, [
+      "person",
+    ]);
+
+    if (!userWithPerson.person)
+      throw new NotFoundException("Usuário não encontrado!");
+
+    const personWithCategory =
+      await this.personService.findOneByIdWithRelations(
+        userWithPerson.person.id,
+        ["category"]
+      );
+
+    if (personWithCategory.category.value !== CategoryEnum.Admin) {
+      throw new UnauthorizedException(
+        "Usuário não autorizado para visualizar usuários!"
+      );
+    }
+
     const [results, total] = await this.userRepository.findAndCount({
       take: limit,
       skip: (page - 1) * limit,
@@ -384,6 +410,7 @@ export class UserService {
         },
       },
       select: {
+        isActive: true,
         email: true,
         id: true,
         person: {

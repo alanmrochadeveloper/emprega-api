@@ -1,3 +1,4 @@
+select * from "user"
 -- select * from "job_category"
 -- select * from "job_opportunity"
 -- select * from "major_job_category"

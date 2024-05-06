@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import * as bcrypt from "bcryptjs";
+import { Request } from "express";
 import { AuthGuard } from "src/auth/auth.guard";
 import { CreateUserDTO } from "./create-user-dto";
 import { UserService } from "./user.service";
@@ -24,13 +33,17 @@ export class UserController {
   async findAll(
     @Query("page") page: number = 1,
     @Query("limit") limit: number = 10,
-    @Query("baseRoute") baseRoute = "http://localhost:3000/users"
+    @Query("baseRoute") baseRoute = "http://localhost:3000/users",
+    @Req() request: Request
   ) {
     limit = limit > 100 ? 100 : limit;
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
     return this.userService.findAll({
       page,
       limit,
       route: baseRoute,
+      user,
     });
   }
 }
