@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
+  Put,
   Query,
   Req,
 } from "@nestjs/common";
@@ -29,6 +31,18 @@ export class JobCategoryController {
     return this.jobCategoryService.findAll(page, limit, name);
   }
 
+  @Get(":id")
+  async findById(@Param("id") id: string) {
+    const raw = await this.jobCategoryService.findOneByIdWithRelations(id, [
+      "majorJobCategory",
+    ]);
+    return {
+      ...raw,
+      majorJobCategoryId: raw.majorJobCategory.id,
+      majorJobCategoryValue: raw.majorJobCategory.value,
+    };
+  }
+
   @Post()
   async create(
     @Body() createJobCategoryDto: CreateJobCategoryDto,
@@ -37,6 +51,28 @@ export class JobCategoryController {
     const cookie = request.cookies["jwt"];
     const user = await this.userService.getUserByCookie(cookie);
     return this.jobCategoryService.create(createJobCategoryDto, user);
+  }
+
+  @Put(":id")
+  async replaceJobCategory(
+    @Param("id") id: string,
+    @Body() updateJobCategoryDto: CreateJobCategoryDto,
+    @Req() request: Request
+  ) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    return this.jobCategoryService.replace(id, updateJobCategoryDto, user);
+  }
+
+  @Patch(":id")
+  async updateJobCategory(
+    @Param("id") id: string,
+    @Body() updateJobCategoryDto: Partial<CreateJobCategoryDto>,
+    @Req() request: Request
+  ) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    return this.jobCategoryService.update(id, updateJobCategoryDto, user);
   }
 
   @Delete(":id")

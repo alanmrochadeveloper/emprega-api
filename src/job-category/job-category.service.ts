@@ -28,6 +28,13 @@ export class JobCategoryService {
     return await this.jobCategoryRepository.findOneBy({ id });
   }
 
+  async findOneByIdWithRelations(id: string, relations: string[]) {
+    return await this.jobCategoryRepository.findOne({
+      where: { id },
+      relations,
+    });
+  }
+
   async findAll(page: number = 1, limit: number = 10, name: string) {
     const filters = { name };
     const skip = (page - 1) * limit;
@@ -98,5 +105,106 @@ export class JobCategoryService {
       throw new NotFoundException("Categoria de trabalho não encontrada!");
     }
     await this.jobCategoryRepository.softDelete(id);
+  }
+
+  async replace(
+    id: string,
+    updateJobCategoryDto: CreateJobCategoryDto,
+    user: User
+  ) {
+    if (!user) {
+      throw new UnauthorizedException(
+        "Faça login para substituir uma categoria de trabalho!"
+      );
+    }
+
+    const jobCategory = await this.jobCategoryRepository.findOneBy({ id });
+    if (!jobCategory) {
+      throw new NotFoundException("Categoria de trabalho não encontrada!");
+    }
+
+    const userWithPerson = await this.userService.findOneByIdWithRelations(
+      user.id,
+      ["person"]
+    );
+    const personWithCategory =
+      await this.personService.findOneByIdWithRelations(
+        userWithPerson.person.id,
+        ["category"]
+      );
+
+    if (
+      !userWithPerson.person ||
+      personWithCategory.category.value !== CategoryEnum.Admin
+    ) {
+      throw new UnauthorizedException(
+        "Usuário não autorizado para substituir categoria de trabalho!"
+      );
+    }
+
+    const majorJobCategory = await this.majorJobCategoryService.findOneById(
+      updateJobCategoryDto.majorJobCategoryId
+    );
+    if (!majorJobCategory) {
+      throw new NotFoundException(
+        "Categoria principal de trabalho não encontrada!"
+      );
+    }
+
+    const updatedJobCategory = this.jobCategoryRepository.create({
+      ...jobCategory,
+      ...updateJobCategoryDto,
+      majorJobCategory,
+    });
+
+    return await this.jobCategoryRepository.save(updatedJobCategory);
+  }
+
+  async update(
+    id: string,
+    updateJobCategoryDto: Partial<CreateJobCategoryDto>,
+    user: User
+  ) {
+    if (!user) {
+      throw new UnauthorizedException(
+        "Faça login para atualizar uma categoria de trabalho!"
+      );
+    }
+
+    const jobCategory = await this.jobCategoryRepository.findOneBy({ id });
+    if (!jobCategory) {
+      throw new NotFoundException("Categoria de trabalho não encontrada!");
+    }
+
+    const userWithPerson = await this.userService.findOneByIdWithRelations(
+      user.id,
+      ["person"]
+    );
+    if (
+      !userWithPerson.person ||
+      userWithPerson.person.category.value !== CategoryEnum.Admin
+    ) {
+      throw new UnauthorizedException(
+        "Usuário não autorizado para atualizar categoria de trabalho!"
+      );
+    }
+
+    if (updateJobCategoryDto.majorJobCategoryId) {
+      const majorJobCategory = await this.majorJobCategoryService.findOneById(
+        updateJobCategoryDto.majorJobCategoryId
+      );
+      if (!majorJobCategory) {
+        throw new NotFoundException(
+          "Categoria principal de trabalho não encontrada!"
+        );
+      }
+      jobCategory.majorJobCategory = majorJobCategory;
+    }
+
+    const updatedJobCategory = this.jobCategoryRepository.merge(
+      jobCategory,
+      updateJobCategoryDto
+    );
+    return await this.jobCategoryRepository.save(updatedJobCategory);
   }
 }
