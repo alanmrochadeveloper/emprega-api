@@ -47,7 +47,31 @@ export class UserService {
     return await this.userRepository.findOneBy({ email });
   }
 
-  async findOneById(id: string) {
+  async findOneById(id: string, user: User) {
+    const userWithPerson = await this.findOneByIdWithRelations(user.id, [
+      "person",
+    ]);
+
+    if (!userWithPerson) throw new NotFoundException("Usuário não encontrado!");
+
+    // console.log({ person: userWithPerson.person, user: userWithPerson });
+
+    const personWithCategory =
+      await this.personService.findOneByIdWithRelations(
+        userWithPerson.person.id,
+        ["category"]
+      );
+    if (!personWithCategory)
+      throw new NotFoundException("Pessoa não encontrada!");
+
+    if (
+      userWithPerson.person.id !== id &&
+      personWithCategory.category.value !== CategoryEnum.Admin
+    )
+      throw new UnauthorizedException(
+        "Usuário não autorizado para visualizar usuários!"
+      );
+
     return await this.userRepository.findOneBy({ id });
   }
 
@@ -411,6 +435,7 @@ export class UserService {
       },
       select: {
         isActive: true,
+        emailConfirmed: true,
         email: true,
         id: true,
         person: {

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -45,5 +46,12 @@ export class UserController {
       route: baseRoute,
       user,
     });
+  }
+
+  @Get(":id")
+  @UseGuards(AuthGuard)
+  async findById(@Param("id") id: string, @Req() request: Request) {
+    const user = await this.userService.getUserByCookie(request.cookies["jwt"]);
+    return await this.userService.findOneById(id, user);
   }
 }
