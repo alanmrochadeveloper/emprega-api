@@ -26,7 +26,7 @@ async function bootstrap() {
       "http://localhost:3000",
       "https://localhost:3001",
       "https://main.d3unqwilcm1tv7.amplifyapp.com",
-      "https://development.d3unqwilcm1tv7.amplifyapp.com",
+      "https://develop.d3unqwilcm1tv7.amplifyapp.com",
       "https://emprega-regional-client.vercel.app",
       process.env.CLIENT_URL,
     ],
