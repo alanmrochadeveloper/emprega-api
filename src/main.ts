@@ -20,18 +20,24 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     })
   );
+  const origin = [
+    "https://main.d3unqwilcm1tv7.amplifyapp.com",
+    "https://develop.d3unqwilcm1tv7.amplifyapp.com",
+    "https://emprega-regional-client.vercel.app",
+    "http://localhost:3000",
+    "https://localhost:3001",
+  ];
+  console.log({ origin });
   app.enableCors({
-    origin: [
-      // process.env.FRONTEND_URL,
-      "http://localhost:3000",
-      "https://localhost:3001",
-      "https://main.d3unqwilcm1tv7.amplifyapp.com",
-      "https://develop.d3unqwilcm1tv7.amplifyapp.com",
-      "https://emprega-regional-client.vercel.app",
-      process.env.CLIENT_URL,
-    ],
+    origin,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Origin",
+      "x-access-token",
+    ],
   });
   app.use(cookieParser());
 
