@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -134,5 +135,51 @@ export class JobOpportunityService {
       );
     }
     return jobOpportunity;
+  }
+
+  async softDelete(id: string, userId: string) {
+    const jobOpportunity = await this.findById(id);
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person",
+    ]);
+    if (!user) throw new NotFoundException(`Usuário não encontrado!`);
+
+    const personWithCompany = await this.personService.findOneByIdWithRelations(
+      user.person.id,
+      ["companies", "category"]
+    );
+
+    if (
+      !personWithCompany.companies.some(
+        (company) => company.id === jobOpportunity.company.id
+      ) &&
+      personWithCompany.category.value !== "Admin"
+    )
+      throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
+
+    return await this.jobOpportunityRepository.softDelete(jobOpportunity.id);
+  }
+
+  async delete(id: string, userId: string) {
+    const jobOpportunity = await this.findById(id);
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person",
+    ]);
+    if (!user) throw new NotFoundException(`Usuário não encontrado!`);
+
+    const personWithCompany = await this.personService.findOneByIdWithRelations(
+      user.person.id,
+      ["companies", "category"]
+    );
+
+    if (
+      !personWithCompany.companies.some(
+        (company) => company.id === jobOpportunity.company.id
+      ) &&
+      personWithCompany.category.value !== "Admin"
+    )
+      throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
+
+    return await this.jobOpportunityRepository.remove(jobOpportunity);
   }
 }

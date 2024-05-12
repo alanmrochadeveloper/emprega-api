@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -67,5 +68,24 @@ export class JobOpportunityController {
     const { id: userId } = user;
     return await this.jobOpportunityService.apply(id, userId);
   }
+
+  @Delete(":id")
+  @UseGuards(AuthGuard)
+  async delete(@Param("id") id: string, @Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    const { id: userId } = user;
+    return await this.jobOpportunityService.delete(id, userId);
+  }
+
+  @Delete(":id/soft")
+  @UseGuards(AuthGuard)
+  async softDelete(@Param("id") id: string, @Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    const { id: userId } = user;
+    return await this.jobOpportunityService.softDelete(id, userId);
+  }
 }
+
 export { ApplyJobOpportunityDto };
