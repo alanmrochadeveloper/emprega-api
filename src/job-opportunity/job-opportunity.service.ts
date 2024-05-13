@@ -7,6 +7,8 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { CategoryEnum } from "src/category/category.entity";
 import { CompanyService } from "src/company/company.service";
+import { ApplicationStatusEnum } from "src/job-application/entities/job-application.entity";
+import { JobApplicationService } from "src/job-application/job-application.service";
 import { JobCategoryService } from "src/job-category/job-category.service";
 import { PersonService } from "src/person/person.service";
 import { UserService } from "src/user/user.service";
@@ -22,7 +24,8 @@ export class JobOpportunityService {
     private readonly companyService: CompanyService,
     private readonly userService: UserService,
     private readonly personService: PersonService,
-    private readonly jobCategoryService: JobCategoryService
+    private readonly jobCategoryService: JobCategoryService,
+    private readonly applicationService: JobApplicationService
   ) {}
   async create(payload: Partial<CreateJobOpportunityDto>) {
     const { companyId, jobCategoryId } = payload;
@@ -60,8 +63,8 @@ export class JobOpportunityService {
       skip: (page - 1) * limit,
       order: { createdAt: "DESC" },
       relations: {
-        applicants: {
-          category: true,
+        applications: {
+          person: true,
         },
         company: true,
         jobCategory: {
@@ -97,24 +100,31 @@ export class JobOpportunityService {
     if (person.category.value !== "Candidato")
       throw new BadRequestException(`Usuário não é um candidato!`);
 
-    console.log({ user, person });
-
     const jobOpportunity = await this.findOneByIdWithRelations(id, [
-      "applicants",
+      "applications",
+      "applications.person",
     ]);
     if (!jobOpportunity)
       throw new NotFoundException(`Oportunidade de trabalho não encontrada!`);
 
-    const applicant = jobOpportunity.applicants.find(
-      (applicant) => applicant.id === person.id
+    const applicant = jobOpportunity.applications.find(
+      (application) => application.person.id === person.id
     );
     if (applicant)
       throw new BadRequestException(
         `Você já se candidatou a esta oportunidade!`
       );
-    const applicants = [...jobOpportunity.applicants, person];
+    const newApplication = this.applicationService.create({
+      person,
+      jobOpportunity,
+      applicationStatus: ApplicationStatusEnum.APLICADO,
+    });
 
-    jobOpportunity.applicants = applicants;
+    await this.applicationService.save(newApplication);
+
+    const applications = [...jobOpportunity.applications, newApplication];
+
+    jobOpportunity.applications = applications;
 
     return await this.jobOpportunityRepository.save(jobOpportunity);
   }
@@ -186,19 +196,17 @@ export class JobOpportunityService {
 
   async findApplicants(id: string, userId: string) {
     const jobOpportunity = await this.findOneByIdWithRelations(id, [
-      "applicants",
+      "applications",
+      "applications.person",
     ]);
-
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
     ]);
     if (!user) throw new NotFoundException(`Usuário não encontrado!`);
-
     const personWithCompany = await this.personService.findOneByIdWithRelations(
       user.person.id,
       ["companies", "category"]
     );
-
     if (
       !personWithCompany.companies.some(
         (company) => company.id === jobOpportunity.company.id
@@ -208,8 +216,7 @@ export class JobOpportunityService {
       throw new ForbiddenException(
         `Usuário não tem permissão para ver os candidatos!`
       );
-
-    return jobOpportunity.applicants;
+    return jobOpportunity.applications;
   }
 
   async findAllApplicants(
@@ -220,29 +227,24 @@ export class JobOpportunityService {
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
       "person.category",
-      "person.companies.jobOpportunities.applicants",
+      "person.companies.jobOpportunities.applications",
     ]);
-
     if (!user) throw new NotFoundException(`Usuário não encontrado`);
-
     const skip = (page - 1) * limit;
     const take = limit;
-
     if (user.person.category.value === CategoryEnum.Admin) {
       const [jobOpportunities, total] =
         await this.jobOpportunityRepository.findAndCount({
-          relations: ["applicants"],
+          relations: ["applications", "applications.person"],
           skip,
           take,
         });
-
       const distinctApplicants = jobOpportunities
-        .flatMap((jobOpportunity) => jobOpportunity.applicants)
+        .flatMap((jobOpportunity) => jobOpportunity.applications)
         .filter(
-          (applicant, index, self) =>
-            index === self.findIndex((a) => a.id === applicant.id)
+          (application, index, self) =>
+            index === self.findIndex((a) => a.id === application.id)
         );
-
       return {
         data: distinctApplicants,
         count: distinctApplicants.length,
@@ -251,20 +253,16 @@ export class JobOpportunityService {
         prevPage: page > 1 ? page - 1 : null,
       };
     }
-
     const applicants = user.person.companies.flatMap((company) =>
       company.jobOpportunities.flatMap((jobOpportunity) =>
-        jobOpportunity.applicants.map((applicant) => applicant)
+        jobOpportunity.applications.map((application) => application)
       )
     );
-
     const distinctApplicants = applicants.filter(
-      (applicant, index, self) =>
-        index === self.findIndex((a) => a.id === applicant.id)
+      (application, index, self) =>
+        index === self.findIndex((a) => a.id === application.id)
     );
-
     const paginatedApplicants = distinctApplicants.slice(skip, skip + take);
-
     return {
       data: paginatedApplicants,
       count: distinctApplicants.length,

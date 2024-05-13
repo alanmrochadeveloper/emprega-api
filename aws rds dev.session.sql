@@ -1,4 +1,4 @@
-select * from "user"
+select * from "job_application"
 -- UPDATE "user" set "email_confirmed" = true, confirmation_token = null, token_expires_date = null where id = '757d68c7-33e2-4c95-a51d-a759f124c36a'
 
 -- select * from "user"

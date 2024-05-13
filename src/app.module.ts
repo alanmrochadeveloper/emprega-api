@@ -15,6 +15,7 @@ import { JobOpportunityModule } from "./job-opportunity/job-opportunity.module";
 import { MajorJobCategoryModule } from "./major-job-category/major-job-category.module";
 import { PersonModule } from "./person/person.module";
 import { UserModule } from "./user/user.module";
+import { JobApplicationModule } from './job-application/job-application.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { UserModule } from "./user/user.module";
     AdminEmailModule,
     EmailModule,
     MajorJobCategoryModule,
+    JobApplicationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

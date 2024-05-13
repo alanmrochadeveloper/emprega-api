@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/base/baseEnt";
 import { Company } from "src/company/company.entity";
-import { JobOpportunity } from "src/job-opportunity/jobOpportunity.entity";
+import { JobApplication } from "src/job-application/entities/job-application.entity";
 import { User } from "src/user/user.entity";
 import {
   AfterInsert,
@@ -11,6 +11,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from "typeorm";
 import { Category } from "../category/category.entity";
@@ -72,16 +73,8 @@ export class Person extends BaseEntity {
   @Column({ name: "resume_file_blob", nullable: true, type: "bytea" })
   resumeFileBlob: Buffer;
 
-  @ManyToMany(
-    () => JobOpportunity,
-    (jobOpportunity) => jobOpportunity.applicants
-  )
-  @JoinTable({
-    name: "person_job_opportunity",
-    joinColumn: { name: "person_id" },
-    inverseJoinColumn: { name: "job_opportunity_id" },
-  })
-  jobOpportunities: JobOpportunity[];
+  @OneToMany(() => JobApplication, (jobApplication) => jobApplication.person)
+  applications: JobApplication[];
 
   @ManyToOne(() => Category)
   @JoinColumn({ name: "category_id" })

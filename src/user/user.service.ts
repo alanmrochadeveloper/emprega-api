@@ -436,7 +436,7 @@ export class UserService {
       relations: {
         person: {
           category: true,
-          jobOpportunities: true,
+          applications: true,
           companies: {
             jobOpportunities: true,
           },
@@ -460,7 +460,7 @@ export class UserService {
             tradingName: true,
             jobOpportunities: true,
           },
-          jobOpportunities: true,
+          applications: true,
         },
       },
     });

@@ -1,8 +1,8 @@
 import { BaseEntity } from "src/base/baseEnt";
 import { Company } from "src/company/company.entity";
+import { JobApplication } from "src/job-application/entities/job-application.entity";
 import { JobCategory } from "src/job-category/job-category.entity";
-import { Person } from "src/person/person.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 export enum ModelEnum {
   REMOTE = "remote",
@@ -49,10 +49,11 @@ export class JobOpportunity extends BaseEntity {
   })
   model: ModelEnum;
 
-  @ManyToMany(() => Person, (person) => person.jobOpportunities)
-  applicants: Person[];
-
-  //TODO: application logs table should be created here
+  @OneToMany(
+    () => JobApplication,
+    (jobApplication) => jobApplication.jobOpportunity
+  )
+  applications: JobApplication[];
 
   @ManyToOne(() => Company, (company) => company.jobOpportunities)
   @JoinColumn({ name: "company_id" })

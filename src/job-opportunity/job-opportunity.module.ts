@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CompanyModule } from "src/company/company.module";
+import { JobApplicationModule } from "src/job-application/job-application.module";
 import { JobCategoryModule } from "src/job-category/job-category.module";
 import { PersonModule } from "src/person/person.module";
 import { UserModule } from "src/user/user.module";
@@ -17,6 +18,7 @@ import { JobOpportunity } from "./jobOpportunity.entity";
     UserModule,
     PersonModule,
     JobCategoryModule,
+    JobApplicationModule,
     JwtModule.register({
       secret: "secret", // Use an environment variable for production
       signOptions: { expiresIn },
