@@ -40,3 +40,13 @@ Content-Type: application/json
 GET {{fullUrl}}?page=1&limit=10 HTTP/1.1
 Content-Type: application/json
 
+### get applicants by job opportunity
+
+GET {{fullUrl}}?page=1&limit=10&id=75ddc64e-3001-4f96-8d7a-886c39062143 HTTP/1.1
+Content-Type: application/json
+
+
+### Get All Applicants
+
+GET {{fullUrl}}/applicants/all HTTP/1.1
+Content-Type: application/json

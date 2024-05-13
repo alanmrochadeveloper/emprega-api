@@ -52,6 +52,8 @@ export class JobOpportunity extends BaseEntity {
   @ManyToMany(() => Person, (person) => person.jobOpportunities)
   applicants: Person[];
 
+  //TODO: application logs table should be created here
+
   @ManyToOne(() => Company, (company) => company.jobOpportunities)
   @JoinColumn({ name: "company_id" })
   company: Company;

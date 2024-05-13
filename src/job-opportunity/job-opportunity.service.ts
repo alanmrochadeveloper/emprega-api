@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { CategoryEnum } from "src/category/category.entity";
 import { CompanyService } from "src/company/company.service";
 import { JobCategoryService } from "src/job-category/job-category.service";
 import { PersonService } from "src/person/person.service";
@@ -181,5 +182,95 @@ export class JobOpportunityService {
       throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
 
     return await this.jobOpportunityRepository.remove(jobOpportunity);
+  }
+
+  async findApplicants(id: string, userId: string) {
+    const jobOpportunity = await this.findOneByIdWithRelations(id, [
+      "applicants",
+    ]);
+
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person",
+    ]);
+    if (!user) throw new NotFoundException(`Usuário não encontrado!`);
+
+    const personWithCompany = await this.personService.findOneByIdWithRelations(
+      user.person.id,
+      ["companies", "category"]
+    );
+
+    if (
+      !personWithCompany.companies.some(
+        (company) => company.id === jobOpportunity.company.id
+      ) &&
+      personWithCompany.category.value !== "Admin"
+    )
+      throw new ForbiddenException(
+        `Usuário não tem permissão para ver os candidatos!`
+      );
+
+    return jobOpportunity.applicants;
+  }
+
+  async findAllApplicants(
+    userId: string,
+    page: number = 1,
+    limit: number = 10
+  ) {
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person",
+      "person.category",
+      "person.companies.jobOpportunities.applicants",
+    ]);
+
+    if (!user) throw new NotFoundException(`Usuário não encontrado`);
+
+    const skip = (page - 1) * limit;
+    const take = limit;
+
+    if (user.person.category.value === CategoryEnum.Admin) {
+      const [jobOpportunities, total] =
+        await this.jobOpportunityRepository.findAndCount({
+          relations: ["applicants"],
+          skip,
+          take,
+        });
+
+      const distinctApplicants = jobOpportunities
+        .flatMap((jobOpportunity) => jobOpportunity.applicants)
+        .filter(
+          (applicant, index, self) =>
+            index === self.findIndex((a) => a.id === applicant.id)
+        );
+
+      return {
+        data: distinctApplicants,
+        count: distinctApplicants.length,
+        currentPage: page,
+        nextPage: total > page * limit ? page + 1 : null,
+        prevPage: page > 1 ? page - 1 : null,
+      };
+    }
+
+    const applicants = user.person.companies.flatMap((company) =>
+      company.jobOpportunities.flatMap((jobOpportunity) =>
+        jobOpportunity.applicants.map((applicant) => applicant)
+      )
+    );
+
+    const distinctApplicants = applicants.filter(
+      (applicant, index, self) =>
+        index === self.findIndex((a) => a.id === applicant.id)
+    );
+
+    const paginatedApplicants = distinctApplicants.slice(skip, skip + take);
+
+    return {
+      data: paginatedApplicants,
+      count: distinctApplicants.length,
+      currentPage: page,
+      nextPage: distinctApplicants.length > page * limit ? page + 1 : null,
+      prevPage: page > 1 ? page - 1 : null,
+    };
   }
 }

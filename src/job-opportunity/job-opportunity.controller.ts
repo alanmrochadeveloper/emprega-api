@@ -86,6 +86,24 @@ export class JobOpportunityController {
     const { id: userId } = user;
     return await this.jobOpportunityService.softDelete(id, userId);
   }
+
+  @Get(":id/applicants")
+  @UseGuards(AuthGuard)
+  async findApplicants(@Param("id") id: string, @Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    const { id: userId } = user;
+    return await this.jobOpportunityService.findApplicants(id, userId);
+  }
+
+  @Get("applicants/all")
+  @UseGuards(AuthGuard)
+  async findAllApplicants(@Req() request: Request) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    const { id: userId } = user;
+    return await this.jobOpportunityService.findAllApplicants(userId);
+  }
 }
 
 export { ApplyJobOpportunityDto };
