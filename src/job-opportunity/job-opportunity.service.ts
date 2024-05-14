@@ -91,6 +91,7 @@ export class JobOpportunityService {
     { page, limit, route, majorJobCategoryId, city, term }
   ) {
     const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person.companies.jobOpportunities.company",
       "person.companies.jobOpportunities.applications.person",
       "person.category",
     ]);
@@ -272,7 +273,8 @@ export class JobOpportunityService {
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
       "person.category",
-      "person.companies.jobOpportunities.applications",
+      "person.companies.jobOpportunities.applications.person",
+      "person.companies.jobOpportunities.applications.jobOpportunity",
     ]);
     if (!user) throw new NotFoundException(`Usuário não encontrado`);
     const skip = (page - 1) * limit;
