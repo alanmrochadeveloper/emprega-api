@@ -49,6 +49,29 @@ export class JobOpportunityController {
     });
   }
 
+  @Get("advertiser")
+  @UseGuards(AuthGuard)
+  async findAllByAdvertiser(
+    @Req() request: Request,
+    @Query("page") page = 1,
+    @Query("limit") limit = 10,
+    @Query("majorJobCategoryId") majorJobCategoryId: string,
+    @Query("city") city: string,
+    @Query("term") term: string
+  ) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    const { id: userId } = user;
+    return await this.jobOpportunityService.findAllByAdvertiser(userId, {
+      page: Number(page),
+      limit: Number(limit),
+      route: "/job-opportunity/advertiser",
+      majorJobCategoryId,
+      city,
+      term,
+    });
+  }
+
   @Get(":id")
   async findById(@Param("id") id: string, @Query("full") full: boolean) {
     if (full) {

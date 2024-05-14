@@ -85,6 +85,51 @@ export class JobOpportunityService {
       prevPage: page > 1 ? `${route}?page=${page - 1}&limit=${limit}` : null,
     };
   }
+
+  async findAllByAdvertiser(
+    userId: string,
+    { page, limit, route, majorJobCategoryId, city, term }
+  ) {
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person.companies.jobOpportunities.applications.person",
+      "person.category",
+    ]);
+
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+
+    if (user.person.category.value === CategoryEnum.Admin) {
+      return await this.findAll({
+        page,
+        limit,
+        route,
+        majorJobCategoryId,
+        city,
+        term,
+      });
+    }
+
+    const jobOpportunities = user.person.companies.flatMap(
+      (company) => company.jobOpportunities
+    );
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const results = jobOpportunities.slice(startIndex, endIndex);
+
+    return {
+      currentPage: page,
+      count: jobOpportunities.length,
+      data: results,
+      nextPage:
+        jobOpportunities.length > endIndex
+          ? `${route}?page=${page + 1}&limit=${limit}`
+          : null,
+      prevPage: page > 1 ? `${route}?page=${page - 1}&limit=${limit}` : null,
+    };
+  }
+
   async apply(id: string, userId: string) {
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",

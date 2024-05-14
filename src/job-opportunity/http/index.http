@@ -50,3 +50,8 @@ Content-Type: application/json
 
 GET {{fullUrl}}/applicants/all HTTP/1.1
 Content-Type: application/json
+
+### select all job opportunities by advertiser
+
+GET {{fullUrl}}/advertiser?page=1&limit=10 HTTP/1.1
+Content-Type: application/json
