@@ -1,26 +1,6 @@
 {
     "sqltools.connections": [
         {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 15432,
-            "driver": "PostgreSQL",
-            "name": "docker postgres",
-            "group": "docker",
-            "database": "99Emprega",
-            "username": "root"
-        },
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 15432,
-            "driver": "PostgreSQL",
-            "name": "postgres docker outer port",
-            "group": "outer docker",
-            "database": "99Emprega",
-            "username": "root"
-        },
-        {
             "pgOptions": {
                 "ssl": {
                     "rejectUnauthorized": true
@@ -42,31 +22,6 @@
                 }
             },
             "previewLimit": 50,
-            "server": "emprega-99.cbuaoiimmoy2.sa-east-1.rds.amazonaws.com",
-            "port": 5432,
-            "driver": "PostgreSQL",
-            "name": "aws rds postgres",
-            "group": "online",
-            "database": "Emprega99",
-            "username": "postgres"
-        },
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 15432,
-            "driver": "PostgreSQL",
-            "name": "emprega99",
-            "group": "docker",
-            "database": "emprega99",
-            "username": "root"
-        },
-        {
-            "pgOptions": {
-                "ssl": {
-                    "rejectUnauthorized": false
-                }
-            },
-            "previewLimit": 50,
             "server": "emprega-99-dev.cbuaoiimmoy2.sa-east-1.rds.amazonaws.com",
             "port": 5432,
             "askForPassword": true,
@@ -80,9 +35,8 @@
             "previewLimit": 50,
             "server": "localhost",
             "port": 15432,
-            "askForPassword": true,
             "driver": "PostgreSQL",
-            "name": "localhost docker postgres",
+            "name": "docker postgres",
             "group": "docker",
             "database": "emprega99",
             "username": "root"

@@ -58,6 +58,7 @@ export class JobOpportunityService {
         },
       };
     }
+
     const [results, total] = await this.jobOpportunityRepository.findAndCount({
       take: limit,
       skip: (page - 1) * limit,

@@ -13,6 +13,7 @@ import {
 import * as bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 import { UserService } from "src/user/user.service";
+import { cookieOptions } from "src/utils/globals";
 import { AuthGuard } from "./auth.guard";
 import { RegisterDTO } from "./dto/register.dto";
 
@@ -49,7 +50,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response
   ) {
     const { jwt, user } = await this.userService.signIn(email, password);
-    response.cookie("jwt", jwt, { httpOnly: true });
+    response.cookie("jwt", jwt, cookieOptions);
     return {
       message: "success",
       category: user.person.category.value,
@@ -74,7 +75,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post("signout")
   async signOut(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie("jwt");
+    res.clearCookie("jwt", cookieOptions);
     return {
       message: "success",
     };
