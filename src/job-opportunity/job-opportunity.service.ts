@@ -12,7 +12,7 @@ import { JobApplicationService } from "src/job-application/job-application.servi
 import { JobCategoryService } from "src/job-category/job-category.service";
 import { PersonService } from "src/person/person.service";
 import { UserService } from "src/user/user.service";
-import { Like, Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 import { CreateJobOpportunityDto } from "./dto/create";
 import { JobOpportunity } from "./jobOpportunity.entity";
 
@@ -48,7 +48,7 @@ export class JobOpportunityService {
     }
 
     if (term) {
-      whereCondition.description = Like(`%${term}%`);
+      whereCondition.description = ILike(`%${term}%`);
     }
 
     if (majorJobCategoryId) {
@@ -75,14 +75,15 @@ export class JobOpportunityService {
       where: whereCondition,
     });
 
+    const totalPages = Math.ceil(total / limit);
+
     return {
       currentPage: page,
-      count: total,
+      totalItems: total,
+      totalPages,
       data: results,
       nextPage:
-        total / limit > page
-          ? `${route}?page=${page + 1}&limit=${limit}`
-          : null,
+        totalPages > page ? `${route}?page=${page + 1}&limit=${limit}` : null,
       prevPage: page > 1 ? `${route}?page=${page - 1}&limit=${limit}` : null,
     };
   }
