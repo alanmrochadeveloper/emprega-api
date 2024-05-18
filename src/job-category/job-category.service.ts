@@ -40,6 +40,7 @@ export class JobCategoryService {
     const skip = (page - 1) * limit;
     const [result, total] = await this.jobCategoryRepository.findAndCount({
       where: filters,
+      relations: ["majorJobCategory"],
       skip,
       take: limit,
     });
