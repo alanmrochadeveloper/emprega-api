@@ -41,22 +41,25 @@ export class JobOpportunityService {
     return await this.jobOpportunityRepository.save(jobOpportunity);
   }
 
-  async findAll({ page, limit, route, majorJobCategoryId, city, term }) {
-    const whereCondition: any = {};
+  async findAll({ page, limit, route, categoryId, city, term }) {
+    const whereCondition: any[] = [];
     if (city) {
-      whereCondition.location = city;
+      whereCondition.push({ location: ILike(`%${city}%`) });
+    }
+
+    if (categoryId) {
+      whereCondition.push({
+        jobCategory: {
+          id: categoryId,
+        },
+      });
     }
 
     if (term) {
-      whereCondition.description = ILike(`%${term}%`);
-    }
-
-    if (majorJobCategoryId) {
-      whereCondition.jobCategory = {
-        majorJobCategory: {
-          id: majorJobCategoryId,
-        },
-      };
+      whereCondition.push(
+        { description: ILike(`%${term}%`) },
+        { title: ILike(`%${term}%`) }
+      );
     }
 
     const [results, total] = await this.jobOpportunityRepository.findAndCount({
@@ -90,7 +93,7 @@ export class JobOpportunityService {
 
   async findAllByAdvertiser(
     userId: string,
-    { page, limit, route, majorJobCategoryId, city, term }
+    { page, limit, route, categoryId, city, term }
   ) {
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person.companies.jobOpportunities.company",
@@ -107,7 +110,7 @@ export class JobOpportunityService {
         page,
         limit,
         route,
-        majorJobCategoryId,
+        categoryId,
         city,
         term,
       });
@@ -197,7 +200,9 @@ export class JobOpportunityService {
   }
 
   async softDelete(id: string, userId: string) {
-    const jobOpportunity = await this.findById(id);
+    const jobOpportunityWithCompany = await this.findOneByIdWithRelations(id, [
+      "company",
+    ]);
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
     ]);
@@ -210,13 +215,15 @@ export class JobOpportunityService {
 
     if (
       !personWithCompany.companies.some(
-        (company) => company.id === jobOpportunity.company.id
+        (company) => company.id === jobOpportunityWithCompany.company.id
       ) &&
       personWithCompany.category.value !== "Admin"
     )
       throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
 
-    return await this.jobOpportunityRepository.softDelete(jobOpportunity.id);
+    return await this.jobOpportunityRepository.softDelete(
+      jobOpportunityWithCompany.id
+    );
   }
 
   async delete(id: string, userId: string) {

@@ -33,7 +33,7 @@ export class JobOpportunityController {
   async findAll(
     @Query("page") page: number = 1,
     @Query("limit") limit: number = 10,
-    @Query("majorJobCategoryId") majorJobCategoryId: string,
+    @Query("categoryId") categoryId: string,
     @Query("city") city: string,
     @Query("term") term: string,
     @Query("route") route: string
@@ -43,7 +43,7 @@ export class JobOpportunityController {
       page,
       limit,
       route: `${process.env.CLIENT_URL}/${route}`,
-      majorJobCategoryId,
+      categoryId,
       city,
       term,
     });
@@ -55,7 +55,7 @@ export class JobOpportunityController {
     @Req() request: Request,
     @Query("page") page = 1,
     @Query("limit") limit = 10,
-    @Query("majorJobCategoryId") majorJobCategoryId: string,
+    @Query("categoryId") categoryId: string,
     @Query("city") city: string,
     @Query("term") term: string
   ) {
@@ -66,7 +66,7 @@ export class JobOpportunityController {
       page: Number(page),
       limit: Number(limit),
       route: "/job-opportunity/advertiser",
-      majorJobCategoryId,
+      categoryId,
       city,
       term,
     });
