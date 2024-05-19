@@ -27,6 +27,7 @@ import { expiresIn } from "src/utils/globals";
 import { normalizeRegisterDocuments } from "src/utils/normalizeRegisterDocuments";
 import { validateStateInscr } from "src/utils/stateInscrValidation";
 import { Repository } from "typeorm";
+import { UpdateUserDTO } from "./update-user-dto";
 import { User } from "./user.entity";
 
 @Injectable()
@@ -523,6 +524,79 @@ export class UserService {
       firstName: person.firstName,
       lastName: person.lastName,
       cpf: person.cpf,
+    };
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDTO, userId: string) {
+    const userToUpdate = await this.findOneByIdWithRelations(id, ["person"]);
+    const userToOperate = await this.findOneByIdWithRelations(userId, [
+      "person",
+    ]);
+
+    if (!userToUpdate) {
+      throw new NotFoundException("Usuário não encontrado!");
+    }
+
+    const personWithCategory =
+      await this.personService.findOneByIdWithRelations(
+        userToOperate.person.id,
+        ["category"]
+      );
+
+    if (
+      userToUpdate.person.id !== userId &&
+      personWithCategory.category.value !== CategoryEnum.Admin
+    ) {
+      throw new UnauthorizedException(
+        "Usuário não autorizado para atualizar usuários!"
+      );
+    }
+
+    const updatedUser = this.userRepository.merge(userToUpdate, updateUserDto);
+
+    //TODO: reason about if it will be changed here or if will be only changed in a specific function
+    if (updateUserDto.password) {
+      userToUpdate.password = await bcrypt.hash(updateUserDto.password, 12);
+    }
+
+    const isAdmin = personWithCategory.category.value === CategoryEnum.Admin;
+
+    if (!isAdmin && updateUserDto.email)
+      throw new UnauthorizedException(
+        "Usuário não autorizado para atualizar email!"
+      );
+
+    const newCategory = await this.categoryService.getByValue(
+      updateUserDto.category
+    );
+
+    if (newCategory && !isAdmin)
+      throw new UnauthorizedException(
+        "Usuário não autorizado para atualizar categoria!"
+      );
+
+    userToUpdate.person.category = newCategory;
+
+    if (updateUserDto.email) userToUpdate.email = updateUserDto.email;
+
+    const personToUpdate = await this.personService.findOneByIdWithRelations(
+      userToUpdate.person.id,
+      ["category"]
+    );
+
+    const updatedPerson = Object.assign(personToUpdate, {
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      category: newCategory,
+    });
+
+    await this.personService.save(updatedPerson);
+
+    await this.userRepository.save(userToUpdate);
+
+    return {
+      message: "Usuário atualizado com sucesso!",
+      updatedUser,
     };
   }
 }

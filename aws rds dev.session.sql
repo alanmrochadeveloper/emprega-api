@@ -1,7 +1,9 @@
 -- select * from "job_application"
 -- UPDATE "user" set "email_confirmed" = true, confirmation_token = null, token_expires_date = null where id = 'd5d12442-ab42-4b7f-b910-057c3fae8e0a'
 
-select * from "user"
+-- select * from "user" where "email" = 'teste123123@gmail.com'
+
+-- select * from "person" where person.first_name= 'Candidato' and person.last_name = 'Legal'
 
 -- select * from "user"
 -- select * from "person" where id = '608a4f01-9dd4-42f0-a3c7-2f60adb8b077'

@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -12,6 +13,7 @@ import * as bcrypt from "bcryptjs";
 import { Request } from "express";
 import { AuthGuard } from "src/auth/auth.guard";
 import { CreateUserDTO } from "./create-user-dto";
+import { UpdateUserDTO } from "./update-user-dto";
 import { UserService } from "./user.service";
 
 @Controller("users")
@@ -54,4 +56,17 @@ export class UserController {
     const user = await this.userService.getUserByCookie(request.cookies["jwt"]);
     return await this.userService.findOneById(id, user);
   }
+
+  @UseGuards(AuthGuard)
+  @Put(":id")
+  async update(
+    @Param("id") id: string,
+    @Body() body: UpdateUserDTO,
+    @Req() request: Request
+  ) {
+    const user = await this.userService.getUserByCookie(request.cookies["jwt"]);
+    return this.userService.update(id, body, user.id);
+  }
 }
+
+// TODO move it out to another file
