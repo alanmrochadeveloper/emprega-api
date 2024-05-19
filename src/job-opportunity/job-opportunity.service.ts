@@ -27,6 +27,7 @@ export class JobOpportunityService {
     private readonly jobCategoryService: JobCategoryService,
     private readonly applicationService: JobApplicationService
   ) {}
+
   async create(payload: Partial<CreateJobOpportunityDto>) {
     const { companyId, jobCategoryId } = payload;
     const company = await this.companyService.findOneById(companyId);
@@ -203,6 +204,10 @@ export class JobOpportunityService {
     const jobOpportunityWithCompany = await this.findOneByIdWithRelations(id, [
       "company",
     ]);
+
+    if (!jobOpportunityWithCompany)
+      throw new NotFoundException(`Oportunidade de trabalho não encontrada!`);
+
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
     ]);
@@ -227,7 +232,9 @@ export class JobOpportunityService {
   }
 
   async delete(id: string, userId: string) {
-    const jobOpportunity = await this.findById(id);
+    const jobOpportunityWithCompany = await this.findOneByIdWithRelations(id, [
+      "company",
+    ]);
     const user = await this.userService.findOneByIdWithRelations(userId, [
       "person",
     ]);
@@ -240,13 +247,15 @@ export class JobOpportunityService {
 
     if (
       !personWithCompany.companies.some(
-        (company) => company.id === jobOpportunity.company.id
+        (company) => company.id === jobOpportunityWithCompany.company.id
       ) &&
       personWithCompany.category.value !== "Admin"
     )
       throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
 
-    return await this.jobOpportunityRepository.remove(jobOpportunity);
+    return await this.jobOpportunityRepository.remove(
+      jobOpportunityWithCompany
+    );
   }
 
   async findApplicants(id: string, userId: string) {
@@ -326,5 +335,95 @@ export class JobOpportunityService {
       nextPage: distinctApplicants.length > page * limit ? page + 1 : null,
       prevPage: page > 1 ? page - 1 : null,
     };
+  }
+
+  async replace(
+    id: string,
+    updateJobOpportunityDto: CreateJobOpportunityDto,
+    userId: string
+  ) {
+    const jobOpportunityWithCompany = await this.findOneByIdWithRelations(id, [
+      "company",
+    ]);
+    if (!jobOpportunityWithCompany)
+      throw new NotFoundException(`Oportunidade de trabalho não encontrada!`);
+
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person",
+    ]);
+    if (!user) throw new NotFoundException(`Usuário não encontrado!`);
+
+    const personWithCompany = await this.personService.findOneByIdWithRelations(
+      user.person.id,
+      ["companies", "category"]
+    );
+    if (
+      !personWithCompany.companies.some(
+        (company) => company.id === jobOpportunityWithCompany.company.id
+      ) &&
+      personWithCompany.category.value !== "Admin"
+    )
+      throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
+
+    const jobCategory = await this.jobCategoryService.findOneById(
+      updateJobOpportunityDto.jobCategoryId
+    );
+
+    if (!jobCategory)
+      throw new NotFoundException(`Categoria de trabalho não encontrada!`);
+
+    const updatedJobOpportunity = this.jobOpportunityRepository.merge(
+      jobOpportunityWithCompany,
+      updateJobOpportunityDto
+    );
+
+    updatedJobOpportunity.jobCategory = jobCategory;
+
+    return await this.jobOpportunityRepository.save(updatedJobOpportunity);
+  }
+
+  async update(
+    id: string,
+    updateJobOpportunityDto: Partial<CreateJobOpportunityDto>,
+    userId: string
+  ) {
+    const jobOpportunityWithCompany = await this.findOneByIdWithRelations(id, [
+      "company",
+    ]);
+    if (!jobOpportunityWithCompany)
+      throw new NotFoundException(`Oportunidade de trabalho não encontrada!`);
+
+    const user = await this.userService.findOneByIdWithRelations(userId, [
+      "person",
+    ]);
+    if (!user) throw new NotFoundException(`Usuário não encontrado!`);
+
+    const personWithCompany = await this.personService.findOneByIdWithRelations(
+      user.person.id,
+      ["companies", "category"]
+    );
+    if (
+      !personWithCompany.companies.some(
+        (company) => company.id === jobOpportunityWithCompany.company.id
+      ) &&
+      personWithCompany.category.value !== "Admin"
+    )
+      throw new ForbiddenException(`Usuário não é anunciante da empresa!`);
+
+    const jobCategory = await this.jobCategoryService.findOneById(
+      updateJobOpportunityDto.jobCategoryId
+    );
+
+    if (!jobCategory)
+      throw new NotFoundException(`Categoria de trabalho não encontrada!`);
+
+    const updatedJobOpportunity = this.jobOpportunityRepository.merge(
+      jobOpportunityWithCompany,
+      updateJobOpportunityDto
+    );
+
+    updatedJobOpportunity.jobCategory = jobCategory;
+
+    return await this.jobOpportunityRepository.save(updatedJobOpportunity);
   }
 }

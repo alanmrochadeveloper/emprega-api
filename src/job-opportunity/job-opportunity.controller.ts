@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -126,6 +128,38 @@ export class JobOpportunityController {
     const user = await this.userService.getUserByCookie(cookie);
     const { id: userId } = user;
     return await this.jobOpportunityService.findAllApplicants(userId);
+  }
+
+  @Put(":id")
+  @UseGuards(AuthGuard)
+  async replace(
+    @Param("id") id: string,
+    @Body() updateJobOpportunityDto: CreateJobOpportunityDto,
+    @Req() request: Request
+  ) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    return await this.jobOpportunityService.replace(
+      id,
+      updateJobOpportunityDto,
+      user.id
+    );
+  }
+
+  @Patch(":id")
+  @UseGuards(AuthGuard)
+  async update(
+    @Param("id") id: string,
+    @Body() updateJobOpportunityDto: Partial<CreateJobOpportunityDto>,
+    @Req() request: Request
+  ) {
+    const cookie = request.cookies["jwt"];
+    const user = await this.userService.getUserByCookie(cookie);
+    return await this.jobOpportunityService.update(
+      id,
+      updateJobOpportunityDto,
+      user.id
+    );
   }
 }
 
