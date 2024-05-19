@@ -44,23 +44,25 @@ export class JobOpportunityService {
 
   async findAll({ page, limit, route, categoryId, city, term }) {
     const whereCondition: any[] = [];
+    let condition = null;
     if (city) {
-      whereCondition.push({ location: ILike(`%${city}%`) });
+      condition = { ...condition, location: ILike(`%${city}%`) };
     }
 
     if (categoryId) {
-      whereCondition.push({
+      condition = {
+        ...condition,
         jobCategory: {
           id: categoryId,
         },
-      });
+      };
     }
 
     if (term) {
-      whereCondition.push(
-        { description: ILike(`%${term}%`) },
-        { title: ILike(`%${term}%`) }
-      );
+      whereCondition.push({ ...condition, title: ILike(`%${term}%`) });
+      whereCondition.push({ ...condition, description: ILike(`%${term}%`) });
+    } else if (condition) {
+      whereCondition.push(condition);
     }
 
     const [results, total] = await this.jobOpportunityRepository.findAndCount({
