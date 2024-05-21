@@ -399,18 +399,30 @@ export class UserService {
   }
 
   async getUserByCookie(cookie: string) {
-    const { id } = await this.jwtService.verifyAsync(cookie);
+    try {
+      const { id } = await this.jwtService.verifyAsync(cookie);
+      if (!id) throw new UnauthorizedException("Usuário não autenticado!");
 
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: {
-        person: {
-          category: true,
+      const user = await this.userRepository.findOne({
+        where: { id },
+        relations: {
+          person: {
+            category: true,
+          },
         },
-      },
-    });
+      });
 
-    return user;
+      if (!user) throw new NotFoundException("Usuário não encontrado!");
+
+      return user;
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw new UnauthorizedException(
+          "Sua sessão expirou, por favor faça login novamente. Ou atualize a página (F5)."
+        );
+      }
+      throw new UnauthorizedException(error.message);
+    }
   }
 
   async findAll(options: {

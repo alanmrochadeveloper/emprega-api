@@ -42,28 +42,9 @@ export class JobOpportunityService {
     return await this.jobOpportunityRepository.save(jobOpportunity);
   }
 
-  async findAll({ page, limit, route, categoryId, city, term, userId = null }) {
+  async findAll({ page, limit, route, categoryId, city, term }) {
     const whereCondition: any[] = [];
     let condition = null;
-
-    const userWithPersonCategory =
-      await this.userService.findOneByIdWithRelations(userId, [
-        "person.category",
-      ]);
-
-    if (
-      userId &&
-      userWithPersonCategory.person.category.value !== CategoryEnum.Admin
-    ) {
-      condition = { isActive: true };
-    } else if (
-      userId &&
-      userWithPersonCategory.person.category.value === CategoryEnum.Admin
-    ) {
-      condition = null;
-    } else {
-      condition = { isActive: true };
-    }
 
     if (city) {
       condition = { ...condition, location: ILike(`%${city}%`) };
@@ -84,6 +65,8 @@ export class JobOpportunityService {
     } else if (condition) {
       whereCondition.push(condition);
     }
+
+    condition = { ...condition, isActive: true };
 
     const [results, total] = await this.jobOpportunityRepository.findAndCount({
       take: limit,
@@ -130,7 +113,6 @@ export class JobOpportunityService {
 
     if (user.person.category.value === CategoryEnum.Admin) {
       return await this.findAll({
-        userId,
         page,
         limit,
         route,

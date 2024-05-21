@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -59,10 +60,11 @@ export class AuthController {
     };
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get("user")
   async getUserByCookie(@Req() request: Request) {
     const cookie = request.cookies["jwt"];
+    if (!cookie) throw new UnauthorizedException("Usuário não autenticado!");
     const user = await this.userService.getUserByCookie(cookie);
     const { email, person } = user;
     return {

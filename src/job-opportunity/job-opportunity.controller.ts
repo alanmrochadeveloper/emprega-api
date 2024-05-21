@@ -33,7 +33,6 @@ export class JobOpportunityController {
 
   @Get()
   async findAll(
-    @Req() request: Request,
     @Query("page") page: number = 1,
     @Query("limit") limit: number = 10,
     @Query("categoryId") categoryId: string,
@@ -42,11 +41,6 @@ export class JobOpportunityController {
     @Query("route") route: string
   ) {
     limit = limit > 100 ? 100 : limit;
-    const cookie = request.cookies["jwt"];
-    let user = null;
-    if (cookie) {
-      user = await this.userService.getUserByCookie(cookie);
-    }
     return await this.jobOpportunityService.findAll({
       page,
       limit,
@@ -54,7 +48,6 @@ export class JobOpportunityController {
       categoryId,
       city,
       term,
-      userId: user?.id,
     });
   }
 
