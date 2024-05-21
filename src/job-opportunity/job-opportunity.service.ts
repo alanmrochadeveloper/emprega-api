@@ -59,14 +59,14 @@ export class JobOpportunityService {
       };
     }
 
+    condition = { ...condition, isActive: true };
+
     if (term) {
       whereCondition.push({ ...condition, title: ILike(`%${term}%`) });
       whereCondition.push({ ...condition, description: ILike(`%${term}%`) });
     } else if (condition) {
       whereCondition.push(condition);
     }
-
-    condition = { ...condition, isActive: true };
 
     const [results, total] = await this.jobOpportunityRepository.findAndCount({
       take: limit,
