@@ -21,7 +21,7 @@ import { RegisterDTO } from "./dto/register.dto";
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post("register")
   async register(@Body() body: RegisterDTO) {
@@ -98,4 +98,5 @@ export class AuthController {
       );
     }
   }
+
 }

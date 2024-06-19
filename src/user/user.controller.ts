@@ -68,5 +68,3 @@ export class UserController {
     return this.userService.update(id, body, user.id);
   }
 }
-
-// TODO move it out to another file
